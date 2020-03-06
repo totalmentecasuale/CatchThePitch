@@ -8,6 +8,8 @@ let fontLCD, fontFakeHope, fontsize = 40, fontSizeTitle = 55;
 //----------------------
 //Color variables-------
 let aquamarine, standardCol, darkPink, pink, lightPink, darkGreen, green, lightGreen, darkBlue;
+let colJet, colCedarChest, colDarkVanilla, colGainsboro, colAmazon;
+let colorVector;
 var t, tGrow;
 //Particle system-------
 var ps;
