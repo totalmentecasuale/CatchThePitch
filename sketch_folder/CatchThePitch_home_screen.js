@@ -37,16 +37,6 @@ function setup() {
   cnv = createCanvas(windowWidth, windowHeight);
   centerCanvas();
   //Color setup------
-  aquamarine = color(97, 176, 179);
-  standardCol = color(51, 94, 129);
-  darkPink = color(163, 55, 141);
-  pink = color(202, 97, 166);
-  lightPink = color(216, 153, 196);
-  darkGreen = color(5, 100, 138);
-  green = color(11, 152, 181);
-  lightGreen = color(147, 190, 208);
-  darkBlue = color(38, 42, 98);
-  //Alt color
   colJet = color(50, 41, 47); // Dark Brown
   colCedarChest = color(192, 87, 70); // Dark Red/Orange
   colDarkVanilla = color(220, 204, 163); // Nice Yellow
@@ -116,6 +106,7 @@ function mouseClicked(){
 
   if(bArcade.isOver()){
     ps.explodePS();
+    setTimeout(function(){location.href='../index_arcade_mode.html';}, 1000);
     return false;
   }
 
@@ -125,9 +116,8 @@ function mouseClicked(){
   }
 
   if(bAbout.isOver()){
-    setTimeout(function(){location.href='../index_bar.html';}, 1000);
-
     ps.explodePS();
+    setTimeout(function(){location.href='../index_bar.html';}, 1000);
     return false;
   }
 }
