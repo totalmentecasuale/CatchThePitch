@@ -3,19 +3,19 @@ class gameButton {
     this.bText = bText;
     this.posX = posX;
     this.posY = posY;
-    this.bWidth = width * 0.25;
-    this.bHeight = height * 0.1;
+    this.bWidth = width * 0.2;
+    this.bHeight = height * 0.08;
     this.id = id;
     this.butt = createGraphics(this.bWidth, this.bHeight);
   }
-  
+
   render(){
     //edit with graphics-----------------
     imageMode(CENTER);
     image(this.butt, this.posX, this.posY);
-    
+
     //-----------------------------------
-    
+
     //fill(standardCol);
     //rectMode(CENTER);
     //noStroke();
@@ -30,10 +30,10 @@ class gameButton {
     //var textPosY = this.posY - 5;
     ////textAlign(CENTER, CENTER);
     //text(this.bText, textPosX, textPosY);
-    
+
     //fill(standardCol);
   }
-  
+
   update(){
     //Just in case we want them to move aside
     this.posX = this.posX;
@@ -41,9 +41,9 @@ class gameButton {
     //edit with p5.Graphics-------------
     //this.butt.background(21);
     this.butt.noStroke();
-    this.butt.fill(pink);
-    this.butt.rect(0, 0, this.bWidth, this.bHeight, 0, 20, 20, 20);
-    this.butt.fill(250);
+    this.butt.fill(colCedarChest);
+    this.butt.rect(0, 0, this.bWidth, this.bHeight, 30, 30, 30, 30);
+    this.butt.fill(colGainsboro);
     this.butt.textFont(fontFakeHope);
     this.butt.textSize(fontsize);
     this.butt.textAlign(CENTER, CENTER);
@@ -52,14 +52,16 @@ class gameButton {
     var curDiv = selectAll("#",this.id);
     //curDiv.position(this.posX, this.posY);
     this.butt.parent(this.id);
-    
-    
+
+
     //-----------------------------------
   }
-  
+
   show(){
+    push();
     this.update();
     this.render();
+    pop();
   }
   isOver(){
     if(mouseX > this.posX - this.bWidth/2 && mouseX < this.posX + this.bWidth/2 && mouseY > this.posY - this.bHeight/2 && mouseY < this.posY + this.bHeight/2){

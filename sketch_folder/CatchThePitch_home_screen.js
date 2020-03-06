@@ -46,6 +46,13 @@ function setup() {
   green = color(11, 152, 181);
   lightGreen = color(147, 190, 208);
   darkBlue = color(38, 42, 98);
+  //Alt color
+  colJet = color(50, 41, 47); // Dark Brown
+  colCedarChest = color(192, 87, 70); // Dark Red/Orange
+  colDarkVanilla = color(220, 204, 163); // Nice Yellow
+  colGainsboro = color(220, 225, 233); // Panna
+  colAmazon = color(65, 123, 90); // Green
+  colorVector = [colJet, colCedarChest, colDarkVanilla, colGainsboro, colAmazon];
   t = 0;
   tGrow = true;
   //-----------------
@@ -78,8 +85,7 @@ function setup() {
 
 function draw() {
 
-  var bg_col = color(24);
-  background(bg_col);
+  background(colorVector[0]);
   //-- AM --------------
   ps.runPS();
   //---------------------------
@@ -119,7 +125,8 @@ function mouseClicked(){
   }
 
   if(bAbout.isOver()){
-    location.href='../index_bar.html';
+    setTimeout(function(){location.href='../index_bar.html';}, 1000);
+
     ps.explodePS();
     return false;
   }
