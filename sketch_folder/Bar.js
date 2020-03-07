@@ -3,9 +3,9 @@ class Bar{
     this.timeLeft = timeLeft * 1000;
     this.endTime = this.getTime() + timeLeft;
     this.maxTime = timeLeft;
-    this.position = loc;
-    this.center = createVector(loc.x, loc.y);
-    this.wholeLength = width * 0.2;
+    this.position = loc.copy();
+    this.center = loc.copy();
+    this.wholeLength = windowWidth * 0.2;
     this.currentLength = this.wholeLength;
     //Color
     this.blueBello = color(53, 69, 158);
@@ -19,6 +19,8 @@ class Bar{
   }
 
   render(){
+
+    this.updateDispVariables();
     stroke(255);
     strokeWeight(10);
     //Whole bar
@@ -49,9 +51,16 @@ class Bar{
 
   isOver(){
     if(this.getTime() < this.endTime){
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
     }
+  }
+
+  updateDispVariables(){
+    this.center = createVector(windowWidth/2, windowHeight * 0.15);
+    let temp = this.wholeLength;
+    this.wholeLength = windowWidth * 0.2;
+    this.currentLength = map(this.currentLength, 0, temp, 0, this.wholeLength);
   }
 }
