@@ -26,6 +26,7 @@ function preload() {
   // is loaded before setup() and draw() are called
   fontLCD = loadFont('../assets/lcd.ttf');
   fontFakeHope = loadFont('../assets/FakeHope.ttf');
+  fontGameTime = loadFont('../assets/game_time.ttf');
 }
 function centerCanvas() {
   var x = (windowWidth - width) / 2;
@@ -59,13 +60,23 @@ function setup() {
 
   //Initialize buttons
   var bHeight = lerp(height * 0.15, height, 0.2);
-  bAtc = new gameButton("Against the Clock", width/2, bHeight, 'bAtc');
+  var bSize = 0;
+  var buttonNames = ["Against the Clock", "Arcade Mode", "Zen Mode", "About"];
+  buttonNames.forEach((item) => {
+
+      if(textWidth(item) > bSize){
+        bSize = textWidth(item);
+
+    }
+  });
+
+  bAtc = new gameButton(buttonNames[0], bSize, width/2, bHeight, 'bAtc', 1);
   bHeight = lerp(height * 0.15, height, 0.4);
-  bArcade = new gameButton("Arcade Mode", width/2, bHeight, 'bArcade');
+  bArcade = new gameButton(buttonNames[1], bSize, width/2, bHeight, 'bArcade', 2);
   bHeight = lerp(height * 0.15, height, 0.6);
-  bZen = new gameButton("Zen Mode", width/2, bHeight, 'bZen');
+  bZen = new gameButton(buttonNames[2], bSize, width/2, bHeight, 'bZen', 3);
   bHeight = lerp(height * 0.15, height, 0.8);
-  bAbout = new gameButton("About", width/2, bHeight, 'bAbout');
+  bAbout = new gameButton(buttonNames[3], bSize, width/2, bHeight, 'bAbout', 4);
   //------------------
 
   // //Prog bar
@@ -120,4 +131,10 @@ function mouseClicked(){
     setTimeout(function(){location.href='../index_bar.html';}, 1000);
     return false;
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  ps = new ParticleSystem();
+  ps.createPS();
 }

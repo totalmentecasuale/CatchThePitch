@@ -32,3 +32,7 @@ function draw(){
   background(colJet);
   progBar.run();
 }
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}

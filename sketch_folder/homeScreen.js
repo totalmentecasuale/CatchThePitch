@@ -1,11 +1,12 @@
 class gameButton {
-  constructor(bText, posX, posY, id){
+  constructor(bText, bWidth, posX, posY, id, ord){
     this.bText = bText;
     this.posX = posX;
     this.posY = posY;
-    this.bWidth = width * 0.2;
-    this.bHeight = height * 0.08;
+    this.bWidth = max(bWidth, width * 0.2);
+    this.bHeight = height * 0.09;
     this.id = id;
+    this.ord = ord;
     this.butt = createGraphics(this.bWidth, this.bHeight);
   }
 
@@ -36,15 +37,17 @@ class gameButton {
 
   update(){
     //Just in case we want them to move aside
-    this.posX = this.posX;
-    this.posY = this.posY;
+    this.posX = width/2;
+    this.posY = lerp(height * 0.15, height, 0.2 * this.ord);;
     //edit with p5.Graphics-------------
     //this.butt.background(21);
     this.butt.noStroke();
     this.butt.fill(colCedarChest);
     this.butt.rect(0, 0, this.bWidth, this.bHeight, 30, 30, 30, 30);
     this.butt.fill(colGainsboro);
-    this.butt.textFont(fontFakeHope);
+    this.butt.stroke(colJet);
+    this.butt.strokeWeight(2);
+    this.butt.textFont(fontGameTime);
     this.butt.textSize(fontsize);
     this.butt.textAlign(CENTER, CENTER);
     this.butt.text(this.bText, this.butt.width/2, this.butt.height/2);
@@ -69,5 +72,9 @@ class gameButton {
         return true;
       }
       return false;
+  }
+
+  resize(){
+
   }
 }

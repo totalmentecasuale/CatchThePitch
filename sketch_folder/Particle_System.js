@@ -43,17 +43,12 @@ class ParticleSystem {
         } else {
         this.particles[i].explode = true;
         this.particles[i].render();
+        }
       }
-      }
-
-
   }
 
   explodePS(){
     this.exploding = true;
-    // this.particles.forEach(function(item){
-    //   item.explode = true;
-    // });
   }
 
   kill(index){
