@@ -123,6 +123,7 @@ function mouseClicked(){
 
   if(bZen.isOver()){
     ps.explodePS();
+    setTimeout(function(){location.href='../index_zen_mode.html';}, 1000);
     return false;
   }
 
