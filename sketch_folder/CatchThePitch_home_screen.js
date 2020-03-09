@@ -4,7 +4,8 @@
 
 let cnv, butt;
 //Font variables -------
-let fontLCD, fontFakeHope, fontsize = 40, fontSizeTitle = 55;
+// let fontLCD, fontFakeHope;
+let fontsize = 40, fontSizeTitle = 55;
 //----------------------
 //Color variables-------
 let aquamarine, standardCol, darkPink, pink, lightPink, darkGreen, green, lightGreen, darkBlue;
@@ -24,9 +25,9 @@ var bATC, bArcade, bZen, bAbout;
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
   // is loaded before setup() and draw() are called
-  fontLCD = loadFont('../assets/lcd.ttf');
-  fontFakeHope = loadFont('../assets/FakeHope.ttf');
-  fontGameTime = loadFont('../assets/game_time.ttf');
+  // fontLCD = loadFont('../assets/lcd.ttf');
+  //fontFakeHope = loadFont('../assets/FakeHope.ttf');
+  // fontGameTime = loadFont('../assets/game_time.ttf');
 }
 function centerCanvas() {
   var x = (windowWidth - width) / 2;

@@ -14,25 +14,7 @@ class gameButton {
     //edit with graphics-----------------
     imageMode(CENTER);
     image(this.butt, this.posX, this.posY);
-
     //-----------------------------------
-
-    //fill(standardCol);
-    //rectMode(CENTER);
-    //noStroke();
-    ////edit
-    ////var button = createButton(this.bText);
-    ////button.position(this.posX, this.posY);
-    ////button.mousePressed(console.log(this.bText));
-    ////--- end edit
-    //rect(this.posX, this.posY, this.bWidth, this.bHeight, 0, 20, 20, 20);
-    //fill(aquamarine);
-    //var textPosX = this.posX;
-    //var textPosY = this.posY - 5;
-    ////textAlign(CENTER, CENTER);
-    //text(this.bText, textPosX, textPosY);
-
-    //fill(standardCol);
   }
 
   update(){
@@ -40,7 +22,6 @@ class gameButton {
     this.posX = width/2;
     this.posY = lerp(height * 0.15, height, 0.2 * this.ord);;
     //edit with p5.Graphics-------------
-    //this.butt.background(21);
     this.butt.noStroke();
     this.butt.fill(colCedarChest);
     this.butt.rect(0, 0, this.bWidth, this.bHeight, 30, 30, 30, 30);

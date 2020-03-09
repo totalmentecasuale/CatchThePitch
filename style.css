@@ -5,3 +5,18 @@ html, body {
 canvas {
   display: block;
 }
+
+@font-face {
+  font-family: fontFakeHope;
+  src: url(assets\FakeHope.ttf);
+}
+
+@font-face {
+  font-family: fontLCD;
+  src: url(assets\lcd.ttf);
+}
+
+@font-face {
+  font-family: fontGameTime;
+  src: url(assets\game_time.ttf);
+}
