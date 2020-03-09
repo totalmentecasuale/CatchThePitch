@@ -12,7 +12,7 @@ let steps;
 let checkBox;
 
 //Radius of circle of intervals
-let radius = 150;
+let radius;
 //Interval selector object
 let is;
 //Intervals to be shown
@@ -33,6 +33,8 @@ function centerCanvas() {
 function setup(){
   cnv = createCanvas(windowWidth, windowHeight);
   centerCanvas();
+  radius = windowHeight * 0.15;
+
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
   progBar = new Bar(2000, barPos);
@@ -52,8 +54,7 @@ function setup(){
 
 
   is = new IntervalSelector(intervalsToShow);
-  let index = int((random(intervalsToShow.length) * 50) % intervalsToShow.length);
-  is.selectInterval(index);
+  is.newInterval();
 
   textFont(fontFakeHope);
   textSize(fontsize);
@@ -79,4 +80,5 @@ function draw(){
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  is.updateDispVariables();
 }

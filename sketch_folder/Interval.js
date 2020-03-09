@@ -28,7 +28,7 @@ class Interval{
   
   move(){
     let maxVel = 10;
-    let maxF = 3.5;
+    let maxF = 1.5;
     let desired;
     if(this.selected){
       desired = createVector().sub(this.pos);
@@ -40,7 +40,7 @@ class Interval{
     
     if(desired.mag() < 5){
       let tmp = desired.copy();
-       desired.sub(tmp.mult(0.5)); 
+       desired.sub(tmp.mult(0.1)); 
     }else{
       desired.normalize();
       desired.mult(maxVel);
@@ -61,6 +61,12 @@ class Interval{
     this.initPos = center.copy();
     this.move();
     this.render();
+  }
+
+  isOver(radius){
+    let x_m = map(mouseX, 0, windowWidth, -windowWidth*0.5, windowWidth*0.5);
+    let y_m = map(mouseY, 0, windowHeight, -windowHeight*0.5, windowHeight*0.5);
+    return this.pos.dist(createVector(x_m, y_m)) < radius && !this.selected;
   }
   
 }

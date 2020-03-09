@@ -12,11 +12,11 @@ class Root{
       this.checked = !this.checked;
   }
   
-  show(){
+  show(opac){
     if(this.checked){
-      this.col = color(12, 171, 235); 
+      this.col = color(12, 171, 235, opac); 
     }else{
-      this.col = color(255);
+      this.col = color(255, opac);
     }
     
     fill(this.col);
