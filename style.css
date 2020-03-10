@@ -7,16 +7,16 @@ canvas {
 }
 
 @font-face {
-  font-family: fontFakeHope;
-  src: url(assets\FakeHope.ttf);
+  font-family: 'fontFakeHope';
+  src: url('assets/FakeHope.ttf');
 }
 
 @font-face {
-  font-family: fontLCD;
-  src: url(assets\lcd.ttf);
+  font-family: 'fontLCD';
+  src: url('assets/cd.ttf');
 }
 
 @font-face {
-  font-family: fontGameTime;
-  src: url(assets\game_time.ttf);
+  font-family: 'fontGameTime';
+  src: url('assets/game_time.ttf');
 }
