@@ -15,19 +15,38 @@ let radius;
 //Interval selector object
 let is;
 
+//Coords for netx interval
+let x_next_currentRoot;
+let y_next_currentRoot;
+//Cuurent root 
 let currentRoot;
-let rootText;
+// active intervals
 let activeIntervals;
 
+//Coords for netx root
 let x_next_root;
 let y_next_root;
 let nextRootText;
 
+//Coords for netx interval
 let x_next_interval;
 let y_next_interval;
 let nextIntervalText;
 
+let home;
+
+
+
+//Checl radius for click in clickable texts
 let radiusNextButtons;
+
+//Oscillator
+let wave;
+let playing = false;
+
+//Number of answer shown
+let steps;
+let checkBox;
 
 
 function centerCanvas() {
@@ -47,10 +66,14 @@ function setup(){
   background(colJet);
   fp = new FilterPage();
   radiusNextButtons = 0.06;
-  x_next_interval = 0.35;
-  y_next_interval = 0.4;
-  x_next_root = 0.35;
-  y_next_root = 0.2;
+  x_next_interval = 0.9;
+  y_next_interval = 0.8;
+  x_next_root = 0.9;
+  y_next_root = 0.6;
+  x_next_currentRoot = 0.9;
+  y_next_currentRoot = 0.4;
+  wave = new Tone();
+  steps = 15;
 }
 
 
@@ -80,23 +103,24 @@ function draw() {
       rootsList = activeRoots;
 
       if(activeIntervals.length > 0){
+        home = new ClickableText("Catch the pitch", 0.5, 0.1, radiusNextButtons * 3, fontsize1);
         is = new IntervalSelector(activeIntervals);
+        is.newInterval();
         newRoot();
+        checkBox = new ProgressBar(steps);
       }
     }else{
       is.render();
 
       nextRootText.show();
       nextIntervalText.show();
-
-      fill(255);
-      textSize(fontsize1);
-      text(currentRoot.text, windowWidth/2 * 0.7, -windowHeight*0.15);
+      currentRoot.show();
+      checkBox.show();
+      home.show();
     }
   }else if(!fp.invisible()){
     fp.render();
   }
-
 }
 
 function mouseClicked(){
@@ -104,18 +128,23 @@ function mouseClicked(){
     fp.update();
   }
 
-  if(nextRootText != undefined && nextRootText.isOver()){
+  if(home != undefined && home.isOver()){
+      location.href='../index.html';
+  }else if(nextRootText != undefined && nextRootText.isOver()){
     newRoot();
     console.log("nextRootText clicked");
-
   }else if(nextIntervalText != undefined && nextIntervalText.isOver()){
     is.newInterval();
     console.log("nextIntervalText clicked");
+  }else if(currentRoot != undefined && currentRoot.isOver()){
+    wave.play(currentRoot.text);
   }else if(is != undefined){
-    is.checkIntervalsClicked();
+    if(!is.checkIntervalsClicked() && checkBox != undefined){
+      checkBox.newAnswer(int(random(1,2.99999)), currentRoot.text, is.intervals[is.lastSelected].text);
+      is.newInterval();
+    }
   }
 
-  
   return false;
 }
 
@@ -128,17 +157,21 @@ function windowResized() {
   if(is != undefined){
     is.updateDispVariables();
   }
-
 }
 
 function newRoot(){
   let curr_index = -1;
+  
   if(currentRoot != undefined){
-    curr_index = rootsList.indexOf(currentRoot);
+    curr_index = rootsList.indexOf(currentRoot.text);
   }
+  
   let newIndex;
+
   do{
     newIndex = floor(random(1) * rootsList.length);
-    currentRoot = rootsList[newIndex];
-  }while(curr_index >= 0 && newIndex == curr_index);
+    currentRoot = new ClickableText(rootsList[newIndex].text, x_next_currentRoot, y_next_currentRoot, radiusNextButtons, fontsize1);
+  }while(curr_index >= 0 && newIndex == curr_index);  
+  
+  wave.play(currentRoot.text);
 }

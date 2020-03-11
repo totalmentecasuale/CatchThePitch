@@ -14,6 +14,7 @@ class IntervalSelector{
   }
 
   render() {  
+    push();
     translate(windowWidth/2, windowHeight/2);
     noFill();
     strokeWeight(5.0);
@@ -27,6 +28,7 @@ class IntervalSelector{
       let comp_y = (this.radius + this.dist) * sin(offset * -i);
       this.intervals[i].run(createVector(comp_x, comp_y));  
     }
+    pop();
   }
   
   selectInterval(index){
@@ -58,9 +60,10 @@ class IntervalSelector{
     for(let i = 0; i < this.intervals.length; i++){
       if(this.intervals[i].isOver(this.dist)){
         this.selectInterval(i);
-        break;
+        return true;
       }
     }
+    return false;
 
   }
 

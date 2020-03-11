@@ -9,17 +9,16 @@ class ClickableText{
 	}
 
 	show(){
-
+		
 		fill(255);
+		strokeWeight(2);
 		textSize(this.sizeFont);
 		text(this.text, this.a * windowWidth, this.b * windowHeight);
 
 	}
 
-	isOver(){
-		let x_m = map(mouseX, 0, windowWidth, -windowWidth*0.5, windowWidth*0.5);
-		let y_m = map(mouseY, 0, windowHeight, -windowHeight*0.5, windowHeight*0.5);	
-		return dist(x_m, y_m, this.a * windowWidth, this.b * windowHeight) < this.radiusCheck * windowHeight;
+	isOver(){	
+		return dist(mouseX, mouseY, this.a * windowWidth, this.b * windowHeight) < this.radiusCheck * windowHeight;
 	}
 
 }

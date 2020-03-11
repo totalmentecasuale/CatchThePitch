@@ -105,7 +105,7 @@ function stopRootNotePlay(){
 function newQuestion(){
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
   progBar = new Bar(2, barPos);
-  checkBox.newAnswer(int(random(1,2.99999)));  
+  checkBox.newAnswer(int(random(1,2.99999)), "da fare",is.intervals[is.lastSelected].text,0,24);  
   let index = int((random(intervalsToShow.length) * 50) % intervalsToShow.length);
   is.selectInterval(index);
 }

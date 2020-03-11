@@ -11,6 +11,7 @@ class StepBar{
    this.active = false;
    this.col = color(0,0,0);
    this.clock = 35 * offset;
+   this.answer;
   }
   
   show(){ 
@@ -66,16 +67,27 @@ class StepBar{
       this.col = color(r,g,b,alpha);
       fill(this.col);
       //rotateY(radians(this.clock));
-      circle(0,0,this.radius); 
+      circle(0,0,this.radius);
+
       pop();
+
+      if(this.answer != undefined){
+        
+        this.answer.show(); 
+      }
     } 
     
     this.clock += 2.5;
 
   }
   
-  changeStatus(newStatus){
-    this.status = newStatus;  
+  changeStatus(newStatus, answer){
+    this.status = newStatus; 
+    if(answer != undefined){
+      answer.a = this.x/windowWidth * 3;
+      answer.b = this.y/windowHeight;
+    }
+    this.answer = answer;
   }
 
   updateDispVariables(){
