@@ -4,11 +4,10 @@
 
 let cnv, butt;
 //Font variables -------
-// let fontLCD, fontFakeHope;
+let fontLCD, fontFakeHope;
 let fontsize = 40, fontSizeTitle = 55;
 //----------------------
 //Color variables-------
-let aquamarine, standardCol, darkPink, pink, lightPink, darkGreen, green, lightGreen, darkBlue;
 let colJet, colCedarChest, colDarkVanilla, colGainsboro, colAmazon;
 let colorVector;
 var t, tGrow;
@@ -19,8 +18,6 @@ let explode;
 //Button variables------
 var bATC, bArcade, bZen, bAbout;
 //----------------------
-//bAr
-// let progBar;
 
 function centerCanvas() {
   var x = (windowWidth - width) / 2;
@@ -47,7 +44,10 @@ function setup() {
   explode = false;
   //-----------------
   //  Font setup
-  textFont("fontFakeHope");
+  fontLCD = loadFont("../assets/lcd.ttf");
+  fontFakeHope = loadFont("../assets/FakeHope.ttf");
+  fontGameTime = loadFont("../assets/game_time.ttf");
+  textFont(fontFakeHope);
   textSize(fontSizeTitle);
   textAlign(CENTER, CENTER);
   //-----------------

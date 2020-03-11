@@ -9,10 +9,10 @@ class ParticleSystem {
 
   createPS(){
     for(var x = 0; x<=width; x++){
-      if(x < width/2){
-        this.amp+= 0.2;
+      if(x < width/4 || (x < 3*width/4 && x > width/2)){
+        this.amp+= 0.3;
       }else{
-        this.amp-= 0.2;
+        this.amp-= 0.3;
       }
       var y = this.amp * sin(x * 600/* * millis()/100000000*/);
       this.particles.push(new Particle(createVector(x,y), this.amp));

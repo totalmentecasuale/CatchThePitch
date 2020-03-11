@@ -7,10 +7,15 @@ class Particle{
     this.explode = false;
     this.lifespan = random(100);
     this.xSin = 0;
+    this.phaseShift = 0;
   }
 
   update(){
-    this.loc.y = height * 0.56 + sin(this.xSin + this.loc.x / 10) * this.amp;
+    if(this.loc.x > width/2){
+      this.phaseShift = PI;
+    }
+    var ampMult = map(mouseY, width, 0, 0.5, 2);
+    this.loc.y = height * 0.56 + sin(this.xSin + this.loc.x / 6 - this.phaseShift) * (this.amp * ampMult);
     this.xSin += map(mouseX, 0, width, 0.06, 0.4);
     if(this.explode){
       var explodeDest = createVector(random(2*width), random(1.5*height));
