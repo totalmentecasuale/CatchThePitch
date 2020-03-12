@@ -7,16 +7,7 @@ canvas {
 }
 
 @font-face {
+  font-family: 'Noto Sans JP', sans-serif;
   font-family: 'fontFakeHope';
   src: url('assets/FakeHope.ttf');
-}
-
-@font-face {
-  font-family: 'fontLCD';
-  src: url('assets/cd.ttf');
-}
-
-@font-face {
-  font-family: 'fontGameTime';
-  src: url('assets/game_time.ttf');
 }

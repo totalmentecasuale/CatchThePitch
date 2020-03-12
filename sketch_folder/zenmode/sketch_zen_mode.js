@@ -20,7 +20,7 @@ let cnv;
 //A greater number of arguments is useful to secondary information and it will be place in the
 //field "filler" of a clickable text
 
-//The set of intervals available 
+//The set of intervals available
 let intervalsSet = [[['P4', 'P5', 'M6', 'm6'], false, 0, 0],
                     [['m7', 'M7', 'P8'], false, 0, 0], [['PU','m3','M3'], false, 0, 0]];
 
@@ -49,7 +49,7 @@ let y_next_currentRoot;
 // current index current root in rootList
 let curr_index = -1;
 
-//Cuurent root 
+//Cuurent root
 let currentRoot;
 // active intervals
 let activeIntervals;
@@ -129,7 +129,7 @@ function setup(){
 }
 
 
-function draw() { 
+function draw() {
   background(colJet);
 
   //If type of zen mode phase
@@ -148,18 +148,18 @@ function draw() {
 
   }else if(phase == 1){ // Interval drill
 
-    if(is == undefined){//if first run of the branch, setup interval drill 
+    if(is == undefined){//if first run of the branch, setup interval drill
 
       //the intervals the user selected
       activeIntervals = [];
       nextRootText = new ClickableText("Change root", x_next_root, y_next_root,radiusNextButtons, fontsize1);
       nextIntervalText = new ClickableText("Change interval", x_next_interval, y_next_interval,radiusNextButtons, fontsize1)
-      
+
       //take only the active ones
       intervalsSet.forEach(function(element){
         if(element[1]){
           element[0].forEach(interval => activeIntervals.push(interval));
-        }     
+        }
       });
 
       //At least one set of intervals must be selected
@@ -172,7 +172,7 @@ function draw() {
         is.newInterval();
         //initialize the root of reference
         newRoot();
-        //create the answers bar 
+        //create the answers bar
         checkBox = new ProgressBar(steps);
       }
     }else{ //the page has already been initialized
@@ -184,7 +184,7 @@ function draw() {
       nextRootText.show();
       //show the change interval button
       nextIntervalText.show();
-      //show the current root 
+      //show the current root
       currentRoot.show();
       //show the answers bar
       checkBox.show();
@@ -193,7 +193,7 @@ function draw() {
     }
   }else if(phase == 2){ // chords drill
     if(cf == undefined){ //first run of the branch, setup chord drill
-      
+
       //the active set of type of chords
       let activeSetGrades = [];
 
@@ -201,7 +201,7 @@ function draw() {
       fp.chordsList.forEach(function(element){
         if(element.checked){
           activeSetGrades.push(element);
-        }     
+        }
       });
 
       //the active modes
@@ -211,7 +211,7 @@ function draw() {
       fp.modes.forEach(function(element){
         if(element.checked){
           activeModes.push(element);
-        } 
+        }
       });
 
       //if there's type of chords to be shown
@@ -219,14 +219,14 @@ function draw() {
         //create homepage button
         home = new ClickableText("Catch the pitch", 0.5, 0.1, radiusNextButtons * 3, fontsize1);
         //define a new root among all possible notes
-        newRandomRoot();        
+        newRandomRoot();
         //create circle of fifth
         cf = new FifthCircle(activeSetGrades, activeModes);
         //create the answers bar, passing the active type of chords selected
         checkBox = new ProgressBar(cf.type.filler.length);
       }
     }else{ //the page has already been initialized
-      
+
       //show the circle of fifth
       cf.render();
       //show the current root
@@ -289,38 +289,46 @@ function windowResized() {
   if(fp != undefined && !fp.invisible()){ // if showing
     fp.updateDispVariables();
   }
-  
+
   if(is != undefined){ // if showing
     is.updateDispVariables();
   }
 }
 
 function newRoot(){
-  
+
   let newIndex;
 
   //get a random new root FROM THE FILTERS OF INTERVALS until (the current index is different respect the previous one AND the previous one is available)
   do{
     newIndex = floor(random(1) * fp.roots.length);
     currentRoot = new ClickableText(fp.roots[newIndex].text, x_next_currentRoot, y_next_currentRoot, radiusNextButtons, fontsize1);
-  }while(curr_index >= 0 && newIndex == curr_index);  
-  
+  }while(curr_index >= 0 && newIndex == curr_index);
+
   curr_index = newIndex;
 
   wave.play(currentRoot.text);
 }
 
 function newRandomRoot(){
-  
+
   let newIndex;
 
   //get a random new root FROM THE 12 NOTES until (the current index is different respect the previous one AND the previous one is available)
   do{
     newIndex = floor(random(1) * rootsList.length);
     currentRoot = new ClickableText(rootsList[newIndex], x_next_currentRoot, y_next_currentRoot, radiusNextButtons, fontsize1);
-  }while(curr_index >= 0 && newIndex == curr_index);  
-  
+  }while(curr_index >= 0 && newIndex == curr_index);
+
   curr_index = newIndex;
 
   wave.play(currentRoot.text);
 }
+
+function flatify(s){
+   if ((s[1] == 'b' || s[1] == 'B') && s.length > 1) {
+     var newS = s[0] + '♭' + s.substr(2);
+     return newS;
+   }
+   return s;
+ }

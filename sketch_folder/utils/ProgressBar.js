@@ -1,5 +1,5 @@
 class ProgressBar{
-  
+
   //count is the number of answer - 1 to be shown (1 is always the current question)
   constructor(count){
     this.steps = count;
@@ -17,16 +17,17 @@ class ProgressBar{
     //activate the first one
     this.cells[0].active = true;
   }
-  
+
   show(){
-    //show all the answers 
+    //show all the answers
    for(let i = 0; i < this.cells.length; i++){
     this.cells[i].show();
    }
   }
-  
+
   newAnswer(status, root, interval){
-   let answerIdx = 0; 
+    console.log(interval + ' in Answer');
+   let answerIdx = 0;
    let answers = [];
 
    // for all the answers
@@ -38,16 +39,15 @@ class ProgressBar{
        answerIdx = i;
        //update the status
        this.statusCells[i] = status;
-       //create the related answer
-       answers.push(new ClickableText(root + " " + interval, 0.2, this.cells[i].y / windowHeight, 0, 24));
+       answers.push(new ClickableText(flatify(root.toString(true).toUpperCase())  + " " + interval, 0.2, this.cells[i].y / windowHeight, 0, 24));
      }else{
       //get the related answer
       answers.push(this.cells[i].answer);
      }
 
-   }  
+   }
 
-   
+
    // if it's full, slice it and add a new answer with initial status
    if(answerIdx == this.cells.length - 1){
     this.statusCells = this.statusCells.slice(1, this.statusCells.length);
@@ -64,6 +64,8 @@ class ProgressBar{
         let answer = answers[i];
         this.cells[i].changeStatus(this.statusCells[i], answer);
     }
-   
+
   }
+
+
 }

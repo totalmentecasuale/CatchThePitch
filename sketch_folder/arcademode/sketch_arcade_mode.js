@@ -1,5 +1,5 @@
 // Progress bar declare
-let progBar;
+let timeBar;
 
 // Color declare
 let colJet, colCedarChest, colDarkVanilla, colGainsboro, colAmazon;
@@ -16,16 +16,28 @@ let radius;
 //Interval selector object
 let is;
 //Intervals to be shown
-let intervalsToShow = ['M3', 'm3', 'm6', 'M6', 'P4', 'P5', 'm7', 'P8','Unison', 'M7'];
-
-let wave;
+let intervalsVector = ['M3', 'm3', 'm6', 'M6', 'P4', 'P5', 'm7', 'P8','PU', 'M7'];
+let rootNotesVector = ['C4', 'D4', 'E4', 'F4', 'G4',
+  'A4', 'B4', 'Db4', 'bb4', 'Gb4', 'Ab4', 'Bb4'];
+let currentRoot, currentInterval;
+let wave, env;
 let playing = false;
+
+// Lives hearts
+let answer, answered;
+let livesVector;
+let livesNumber, livesLeft;
+let fullHeart, emptyHeart;
 
 
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
   // is loaded before setup() and draw() are called
   fontFakeHope = loadFont('../assets/game_time.ttf');
+
+  // Loading images
+  fullHeart = loadImage('../assets/full_heart.png');
+  emptyHeart = loadImage('../assets/empty_heart.png');
 }
 
 function centerCanvas() {
@@ -40,7 +52,7 @@ function setup(){
 
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  progBar = new Bar(2, barPos);
+  timeBar = new Bar(2, barPos); // Changed its name to avoid confusion with the ProgressBar class
 
   // Color setup
   //Alt color
@@ -53,42 +65,47 @@ function setup(){
 
   steps = 15;
   checkBox = new ProgressBar(steps);
-  checkBox.newAnswer(int(random(1,2.99999)));  
 
+   // Sound
+   wave = new Tone();
 
-  is = new IntervalSelector(intervalsToShow);
+   // Intervals setup
+  is = new IntervalSelector(intervalsVector);
   is.newInterval();
 
-  textFont(fontFakeHope);
+// First root setup
+  var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
+  currentRoot  = teoria.note(selectedNote);
+
+  wave.play(currentRoot.toString(true));
+  setTimeout(function() {startBar();}, wave.t2 * 1000);
+// Font setup
+  textFont('Noto Sans JP');
   textSize(fontsize);
   textAlign(CENTER, CENTER);
-  wave = new p5.Oscillator();
-  wave.setType('sine');
-  wave.start();
-  wave.amp(0.5);
-  wave.freq(440);
-  playing = true;
-  setTimeout(stopRootNotePlay, 1000);
+
+  // Lives setup
+  answered = false;
+  livesVector = [];
+  livesNumber = 4;
+  createLivesVector();
+  livesLeft = livesVector.length - 1;
+  fullHeart.resize(60, 0);
+  emptyHeart.resize(60, 0);
 }
+
+
 
 function draw(){
   background(colJet);
-
-  if(progBar.isOver() && progBar.started && !playing){
-    wave.start();
-    wave.amp(0.5);
-    wave.freq(440);
-    playing = true;
-    setTimeout(stopRootNotePlay, 1000);
-  }else if(!playing){
-    progBar.start();
+  if(timeBar.isOver() && timeBar.started){
+    answered = false;
   }
-
-  progBar.run();
+  lives();
+  timeBar.run();
   checkBox.show();
 
   is.render();
-
 }
 
 function windowResized() {
@@ -96,16 +113,77 @@ function windowResized() {
   is.updateDispVariables();
 }
 
-function stopRootNotePlay(){
-  wave.stop();
-  playing = false;
-  newQuestion();
-}
-
 function newQuestion(){
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  progBar = new Bar(2, barPos);
-  checkBox.newAnswer(int(random(1,2.99999)), "da fare",is.intervals[is.lastSelected].text,0,24);  
-  let index = int((random(intervalsToShow.length) * 50) % intervalsToShow.length);
+  timeBar = new Bar(1, barPos);
+  console.log(currentRoot.toString());
+  checkBox.newAnswer(answer, currentRoot, is.intervals[is.lastSelected].text);
+  var selectedNote = rootNotesVector[int(random(rootNotesVector.length))]
+  answered = false;
+  currentRoot = teoria.note(selectedNote);
+  let index = int((random(intervalsVector.length) * 50) % intervalsVector.length);
   is.selectInterval(index);
+  wave.play(currentRoot.toString(true));
+  setTimeout(function() {startBar();}, wave.t2 * 1000);
 }
+
+function createLivesVector(){
+  for(var i = 0; i < livesNumber; i++){
+    livesVector.push(true);
+  }
+}
+function lives(){
+  var hX = width * 0.75;
+  var hY = height * 0.04;
+  for(var i = 0; i < livesVector.length; i++){
+    hX = width * 0.75 + fullHeart.width * (i + 1);
+    // console.log(livesVector);
+    if(livesVector[i]){
+      image(fullHeart, hX, hY);
+    } else {
+      image(emptyHeart, hX, hY);
+    }
+  }
+}
+function renderLives(){
+
+}
+
+function removeLife(){
+      livesVector[livesLeft] = false;
+      livesLeft--;
+  }
+
+  function keyPressed(){
+  switch (key) { // Manually answer to questions
+    case 'z':
+      answered = true;
+      answer = 1;
+      newQuestion();
+      break;
+    case 'x':
+      answer = 2;
+      answered = true;
+      newQuestion();
+      removeLife();
+        break;
+    default:
+      answer = 2;
+  }
+}
+
+function flatify(s){
+   if ((s[1] == 'b' || s[1] == 'B') && s.length > 1) {
+     var newS = s[0] + '♭' + s.substr(2);
+     return newS;
+   }
+   return s;
+ }
+
+ function startBar(){
+   timeBar.start();
+ }
+
+ function death(){
+   
+ }
