@@ -11,6 +11,7 @@ class Tone{
 	}
 
 	play(note){
+		//Given a note, add the octave and play the sound
 		let noteTeoria = teoria.note.fromString(note + "4");
 
 		this.osc.start();

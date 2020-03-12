@@ -1,7 +1,8 @@
-class Root{
+class FilterCell{
   
-  constructor(value, x, y){
+  constructor(value, x, y, filler){
     this.text = value;
+    this.filler = filler;
     this.col = color(255);
     this.x = x;
     this.y = y;

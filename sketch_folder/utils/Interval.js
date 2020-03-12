@@ -1,4 +1,4 @@
-class Interval{
+  class Interval{
   
   constructor(text, value, type, position){
     this.text = text;

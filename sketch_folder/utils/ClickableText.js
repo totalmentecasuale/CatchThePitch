@@ -9,12 +9,12 @@ class ClickableText{
 	}
 
 	show(){
-		
+		push();
 		fill(255);
 		strokeWeight(2);
 		textSize(this.sizeFont);
 		text(this.text, this.a * windowWidth, this.b * windowHeight);
-
+		pop();
 	}
 
 	isOver(){	
