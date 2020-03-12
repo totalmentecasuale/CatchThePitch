@@ -27,4 +27,8 @@ class ClickableText{
 		var y1 = y + textAscent() / 2;
 		return (mouseX > x - w / 2  && mouseX < x1 + w/2 && mouseY > y - h/2  && mouseY < y1 + h/2 );
 	}
+
+	update(text){
+		this.text = text;
+	}
 }

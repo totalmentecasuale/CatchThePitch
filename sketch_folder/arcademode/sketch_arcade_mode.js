@@ -29,6 +29,8 @@ let livesVector;
 let livesNumber, livesLeft;
 let fullHeart, emptyHeart;
 
+// Stats
+let answersGiven, correctAnswers;
 
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
@@ -92,12 +94,19 @@ function setup(){
   livesLeft = livesVector.length - 1;
   fullHeart.resize(60, 0);
   emptyHeart.resize(60, 0);
+
+  // Stats setup
+  answersGiven = 0;
+  correctAnswers = 0;
+  statString = 'Correct / Total answers: ' + correctAnswers + ' / ' + answersGiven;
+  stats = new ClickableText(statString, 0.85, 0.02, 1, 14);
 }
 
 
 
 function draw(){
   background(colJet);
+  stats.show();
   if(timeBar.isOver() && timeBar.started){
     answered = false;
   }
@@ -116,13 +125,17 @@ function windowResized() {
 function newQuestion(){
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
   timeBar = new Bar(1, barPos);
-  console.log(currentRoot.toString());
+
+  updateCounter();
+
   checkBox.newAnswer(answer, currentRoot, is.intervals[is.lastSelected].text);
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))]
-  answered = false;
   currentRoot = teoria.note(selectedNote);
   let index = int((random(intervalsVector.length) * 50) % intervalsVector.length);
   is.selectInterval(index);
+
+  answered = false;
+
   wave.play(currentRoot.toString(true));
   setTimeout(function() {startBar();}, wave.t2 * 1000);
 }
@@ -145,25 +158,28 @@ function lives(){
     }
   }
 }
-function renderLives(){
-
-}
 
 function removeLife(){
       livesVector[livesLeft] = false;
       livesLeft--;
+      if(livesLeft == -1){
+        death();
+      }
   }
 
   function keyPressed(){
   switch (key) { // Manually answer to questions
-    case 'z':
+    case 'z': // Correct answer
       answered = true;
+      correctAnswers++;
+      answersGiven++;
       answer = 1;
       newQuestion();
       break;
-    case 'x':
+    case 'x': // Wrong answer
       answer = 2;
       answered = true;
+      answersGiven++;
       newQuestion();
       removeLife();
         break;
@@ -172,7 +188,7 @@ function removeLife(){
   }
 }
 
-function flatify(s){
+function flatify(s){ //Changes every b in flat, needs impprovement
    if ((s[1] == 'b' || s[1] == 'B') && s.length > 1) {
      var newS = s[0] + '♭' + s.substr(2);
      return newS;
@@ -184,6 +200,11 @@ function flatify(s){
    timeBar.start();
  }
 
- function death(){
-   
+ function death(){ // Triggers death event
+   alert('You\'re dead bitch');
+ }
+
+ function updateCounter(){ // Updates the string and the text shown
+   statString = 'Correct / Total answers: ' + correctAnswers + ' / ' + answersGiven;
+   stats.update(statString);
  }
