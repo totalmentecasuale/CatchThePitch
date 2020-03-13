@@ -19,7 +19,7 @@ let is;
 let intervalsVector = ['M3', 'm3', 'm6', 'M6', 'P4', 'P5', 'm7', 'P8','PU', 'M7'];
 let rootNotesVector = ['C4', 'D4', 'E4', 'F4', 'G4',
   'A4', 'B4', 'Db4', 'bb4', 'Gb4', 'Ab4', 'Bb4'];
-let currentRoot, currentInterval;
+let currentRoot, rootText, currentInterval;
 let wave, env;
 let playing = false;
 
@@ -30,7 +30,7 @@ let livesNumber, livesLeft;
 let fullHeart, emptyHeart;
 
 // Stats
-let answersGiven, correctAnswers;
+let stats;
 
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
@@ -78,6 +78,8 @@ function setup(){
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
   currentRoot  = teoria.note(selectedNote);
+  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 1, 50);
+  rootText.show();
 
   wave.play(currentRoot.toString(true));
   setTimeout(function() {startBar();}, wave.t2 * 1000);
@@ -96,25 +98,16 @@ function setup(){
   emptyHeart.resize(60, 0);
 
   // Stats setup
-  answersGiven = 0;
-  correctAnswers = 0;
-  statString = 'Correct / Total answers: ' + correctAnswers + ' / ' + answersGiven;
-  stats = new ClickableText(statString, 0.85, 0.02, 1, 14);
+  stats = new Stats();
 }
-
 
 
 function draw(){
   background(colJet);
-  stats.show();
   if(timeBar.isOver() && timeBar.started){
     answered = false;
   }
-  lives();
-  timeBar.run();
-  checkBox.show();
-
-  is.render();
+  generalRender(); // Renders everything, po esse na cazzata
 }
 
 function windowResized() {
@@ -126,14 +119,12 @@ function newQuestion(){
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
   timeBar = new Bar(1, barPos);
 
-  updateCounter();
-
   checkBox.newAnswer(answer, currentRoot, is.intervals[is.lastSelected].text);
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))]
   currentRoot = teoria.note(selectedNote);
   let index = int((random(intervalsVector.length) * 50) % intervalsVector.length);
   is.selectInterval(index);
-
+  rootText.update(flatify(currentRoot.toString(true).toUpperCase()));
   answered = false;
 
   wave.play(currentRoot.toString(true));
@@ -150,7 +141,6 @@ function lives(){
   var hY = height * 0.04;
   for(var i = 0; i < livesVector.length; i++){
     hX = width * 0.75 + fullHeart.width * (i + 1);
-    // console.log(livesVector);
     if(livesVector[i]){
       image(fullHeart, hX, hY);
     } else {
@@ -171,15 +161,14 @@ function removeLife(){
   switch (key) { // Manually answer to questions
     case 'z': // Correct answer
       answered = true;
-      correctAnswers++;
-      answersGiven++;
       answer = 1;
+      stats.update(answer);
       newQuestion();
       break;
     case 'x': // Wrong answer
       answer = 2;
       answered = true;
-      answersGiven++;
+      stats.update(answer);
       newQuestion();
       removeLife();
         break;
@@ -201,10 +190,17 @@ function flatify(s){ //Changes every b in flat, needs impprovement
  }
 
  function death(){ // Triggers death event
+   lives();
    alert('You\'re dead bitch');
+   var statsVec = stats.retrieve();
+   alert('Correct: '+statsVec[0]+' Total: '+statsVec[1]);
  }
 
- function updateCounter(){ // Updates the string and the text shown
-   statString = 'Correct / Total answers: ' + correctAnswers + ' / ' + answersGiven;
-   stats.update(statString);
- }
+function generalRender(){ // Non so se è una buona idea
+  stats.render(); // Shows stats text (top right)
+  lives(); // Shows live counter
+  timeBar.run(); // Makes time go tik tok
+  checkBox.show(); // Shows answers on the left
+  is.render(); // Shows interval selector
+  rootText.show();
+}
