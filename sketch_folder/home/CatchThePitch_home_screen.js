@@ -123,7 +123,7 @@ function mouseClicked(){
 
   if(bAbout.isOver()){
     ps.explodePS();
-    setTimeout(function(){location.href='../index_bar.html';}, 1000);
+    setTimeout(function(){location.href='https://github.com/totalmentecasuale/CatchThePitch/blob/master/README.md';}, 1000);
     return false;
   }
 }
