@@ -22,7 +22,8 @@ let cnv;
 
 //The set of intervals available
 let intervalsSet = [[['P4', 'P5', 'M6', 'm6'], false, 0, 0],
-                    [['m7', 'M7', 'P8'], false, 0, 0], [['PU','m3','M3'], false, 0, 0]];
+                    [['m7', 'M7', 'P8'], false, 0, 0], 
+                    [['PU','m3','M3'], false, 0, 0]];
 
 //The set of root notes (Do not change the order)
 let rootsList = ['A', 'D', 'G', 'C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E'];

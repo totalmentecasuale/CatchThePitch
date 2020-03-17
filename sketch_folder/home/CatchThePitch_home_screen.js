@@ -106,6 +106,7 @@ function draw() {
 function mouseClicked(){
   if(bAtc.isOver()){
     ps.explodePS();
+    setTimeout(function(){location.href='../index_againstclock_mode.html';}, 1000);
     return false;
   }
 

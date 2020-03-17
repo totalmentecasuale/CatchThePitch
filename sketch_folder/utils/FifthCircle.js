@@ -46,7 +46,7 @@ class FifthCircle{
 
   updateStatus(){
 
-    //consider the circle of fifth as a circular buffer.
+    // consider the circle of fifth as a circular buffer.
     // THE ORDER OF THE INPUT ARE FUNDAMENTAL FOR THIS ALGORITHM
     // the information about the mode and the current root index inside the rootsList is the starting point to count
     // first the major chords, then the minor chords and the diminished chord.
