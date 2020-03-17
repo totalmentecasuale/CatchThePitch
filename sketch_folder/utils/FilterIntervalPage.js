@@ -2,12 +2,12 @@ class FilterIntervalPage{
   
   constructor(){  
     //coordinates of all buttons for roots
-    this.x_all_roots = windowWidth/2;
-    this.y_all_roots = windowHeight * 0.8;
+    this.x_all_roots = 0.5;
+    this.y_all_roots = 0.8;
 
     //coordinates of all buttons for intervals
-    this.x_all_intervals = windowWidth / 2;
-    this.y_all_intervals = windowHeight / 2 * 0.7;
+    this.x_all_intervals = 0.5;
+    this.y_all_intervals = 0.35;
 
     //radius
     this.radius = windowHeight*0.05;
@@ -42,6 +42,11 @@ class FilterIntervalPage{
     this.all_roots = false;
     this.t = 0;
     this.tGrow = true;
+
+
+    this.allIntervalsButton = new ClickableText("All", this.x_all_intervals, this.y_all_intervals, fontsize1);
+    this.allRootsButton = new ClickableText("All", this.x_all_roots, this.y_all_roots, fontsize1);
+    this.nextPhaseButton = new ClickableText("Go", this.x_all_roots, this.y_all_roots * 1.2, fontsize1);
   }
   
   render(){
@@ -74,18 +79,14 @@ class FilterIntervalPage{
       this.showRoots();
       
       //Show "all" for intervals
-      textSize(fontsize1);
-      fill(255, this.opac);
-      text("All", this.x_all_intervals, this.y_all_intervals);
+      this.allIntervalsButton.show(this.opac);
+
       //Show "all" for roots
-      textSize(fontsize1);
-      fill(255, this.opac);
-      text("All", this.x_all_roots, this.y_all_roots);
+      this.allRootsButton.show(this.opac);
+
 
       //Show "Go" to next phase
-      textSize(fontsize1);
-      fill(255, this.opac);
-      text("GO", this.x_all_roots, windowHeight * 0.94);
+      this.nextPhaseButton.show(this.opac);
     }else{//the filters are set and the page dissolved totally, next phase starts
       phase = 1;
     }
@@ -146,7 +147,7 @@ class FilterIntervalPage{
 
     //Roots buttons
     for(let i = 0; i < this.roots.length; i++){
-      if(dist(x, y, this.roots[i].x,this.roots[i].y) < this.radiusCheckRoot && !this.dissolving){
+      if(this.roots[i].isOver() && !this.dissolving){
         console.log(this.roots[i].text + " clicked");
         this.roots[i].selected();
       }
@@ -161,7 +162,7 @@ class FilterIntervalPage{
     }
     
     //all interval button
-    if(dist(x, y, this.x_all_intervals, this.y_all_intervals) < this.radiusCheckRoot && !this.dissolving){  
+    if(this.allIntervalsButton.isOver() && !this.dissolving){  
       console.log("all_intervals clicked");
 
       this.all_intervals = !this.all_intervals;
@@ -172,7 +173,7 @@ class FilterIntervalPage{
     
 
     //all roots button
-    if(dist(x, y, this.x_all_roots, this.y_all_roots) < this.radiusCheckRoot && !this.dissolving){ 
+    if(this.allRootsButton.isOver() && !this.dissolving){ 
       console.log("all_roots clicked");
  
       this.all_roots = !this.all_roots;
@@ -182,7 +183,7 @@ class FilterIntervalPage{
     }  
 
     //go button 
-    if(dist(x, y, this.x_all_roots, windowHeight * 0.94) < this.radiusCheckRoot && !this.dissolving){ 
+    if(this.nextPhaseButton.isOver() && !this.dissolving){ 
       console.log("dissolve clicked");
       this.dissolve();
     } 

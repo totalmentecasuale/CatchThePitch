@@ -1,8 +1,11 @@
 class Chord {
   constructor(value, x, y, status, col) {
-    this.x = x;
-    this.y = y;
     this.text = value;
+    this.pos = createVector(x,y);
+    this.initPos = createVector(x,y);
+    this.vel = createVector();
+    this.acc = createVector();
+    this.selected = false;
     this.status = status; 
     this.colText = col;
     this.root = false;
@@ -60,13 +63,58 @@ class Chord {
   render(){
     noStroke();
     fill(this.colText);
-    text(this.text,this.x + windowWidth * 0.5, this.y + windowHeight * 0.5);
+    text(this.text,this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5);
     if(this.root){
       noFill();
       strokeWeight(2.5);
       stroke(255, 100);
-      circle(this.x + windowWidth * 0.5, this.y + windowHeight * 0.5, windowHeight * 0.03);
+      circle(this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5, windowHeight * 0.03);
       noStroke();
     }
+  }
+
+  updatePosition(){
+    this.vel.add(this.acc);
+    this.acc.mult(0);
+    this.pos.add(this.vel);
+  }
+  
+  applyForce(steer){
+    this.acc.add(steer);  
+  }
+  
+  toggleSelect(){
+    this.selected = !this.selected;
+  }
+  
+  
+  move(){
+    let maxVel = 10;
+    let maxF = 1.5;
+    let desired;
+    if(this.selected){  
+      desired = createVector().sub(this.pos);
+
+    }else{
+      let temp = this.initPos.copy();
+      desired = temp.sub(this.pos);
+    }
+    
+    if(desired.mag() < 5){
+      let tmp = desired.copy();
+       desired.sub(tmp.mult(0.1)); 
+    }else{
+      desired.normalize();
+      desired.mult(maxVel);
+    }
+    let steer = desired.sub(this.vel);
+    steer.limit(maxF);
+    this.applyForce(steer);
+    this.updatePosition();
+  }
+  
+  run(){
+    this.move();
+    this.render();
   }
 }

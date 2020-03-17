@@ -30,7 +30,7 @@
     let maxVel = 10;
     let maxF = 1.5;
     let desired;
-    if(this.selected){
+    if(this.selected){  
       desired = createVector().sub(this.pos);
 
     }else{

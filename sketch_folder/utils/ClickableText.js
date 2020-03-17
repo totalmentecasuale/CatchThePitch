@@ -1,16 +1,15 @@
 class ClickableText{
 
-	constructor(text, a, b, radiusCheck, sizeFont){
+	constructor(text, a, b, sizeFont){
 		this.text = text;
 		this.a = a;
 		this.b = b;
-		this.radiusCheck = radiusCheck;
 		this.sizeFont = sizeFont;
 	}
 
-	show(){
+	show(opac = 255){
 		push();
-		fill(255);
+		fill(255, opac);
 		strokeWeight(2);
 		textSize(this.sizeFont);
 		text(this.text, this.a * windowWidth, this.b * windowHeight);
@@ -25,7 +24,7 @@ class ClickableText{
 		var h = textAscent();
 		var x1 = x + textWidth(this.text) / 2;
 		var y1 = y + textAscent() / 2;
-		return (mouseX > x - w / 2  && mouseX < x1 + w/2 && mouseY > y - h/2  && mouseY < y1 + h/2 );
+		return (mouseX > x - w / 2  && mouseX < x1 && mouseY > y - h/2  && mouseY < y1);
 	}
 
 	update(text){

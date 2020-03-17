@@ -24,5 +24,16 @@ class FilterCell{
     textSize(fontsize2);
     text(this.text, this.x, this.y);
   }
+
+
+  isOver(){
+    var w = textWidth(this.text);
+    var h = textAscent();
+    var x1 = this.x + w / 2;
+    var y1 = this.y + h / 2;
+    var x2 = this.x - w / 2;
+    var y2 = this.y - h / 2;
+    return (mouseX > x2  && mouseX < x1 && mouseY > y2  && mouseY < y1);
+  }
   
 }

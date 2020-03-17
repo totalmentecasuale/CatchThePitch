@@ -78,7 +78,7 @@ function setup(){
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
   currentRoot  = teoria.note(selectedNote);
-  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 1, 50);
+  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 50);
   rootText.show();
 
   wave.play(currentRoot.toString(true));

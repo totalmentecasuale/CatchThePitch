@@ -2,15 +2,15 @@ class FilterChordsPage{
   
   constructor(){ 
     //coordinates of all modes button 
-    this.x_all_modes = windowWidth/2;
-    this.y_all_modes = windowHeight * 0.8;
+    this.x_all_modes = 0.5;
+    this.y_all_modes = 0.8;
 
     //chords types
     this.chordsList = [];
     
     //coordinates of all chord types button
-    this.x_all_chords = windowWidth / 2;
-    this.y_all_chords = windowHeight / 2 * 0.7;
+    this.x_all_chords = 0.5;
+    this.y_all_chords = 0.35;
 
     //radius
     this.radius = windowHeight*0.05;
@@ -54,6 +54,10 @@ class FilterChordsPage{
     this.all_modes = false;
     this.t = 0;
     this.tGrow = true;
+
+    this.allChordButton = new ClickableText("All", this.x_all_chords, this.y_all_chords, fontsize1);
+    this.allModesButton = new ClickableText("All", this.x_all_modes, this.y_all_modes, fontsize1);
+    this.nextPhaseButton = new ClickableText("Go", this.x_all_modes, this.y_all_modes * 1.2, fontsize1);
   }
   
   render(){
@@ -85,18 +89,12 @@ class FilterChordsPage{
       this.showModes();
       
       //show all for chord types
-      textSize(fontsize1);
-      fill(255, this.opac);
-      text("All", this.x_all_chords, this.y_all_chords);
+      this.allChordButton.show(this.opac);
       //show all for modes
-      textSize(fontsize1);
-      fill(255, this.opac);
-      text("All", this.x_all_modes, this.y_all_modes);
+      this.allModesButton.show(this.opac);
       
       //show go for next phase
-      textSize(fontsize1);
-      fill(255, this.opac);
-      text("GO", this.x_all_modes, windowHeight * 0.94);
+      this.nextPhaseButton.show(this.opac);
     }else{ // page is totally dissolved, next phase
       phase = 2;
     }
@@ -118,14 +116,11 @@ class FilterChordsPage{
   }
   
   update(){
-    let x = mouseX;
-    let y = mouseY;
-
     //check if the click has been executed on a element of the filter page
 
     //modes
     for(let i = 0; i < this.modes.length; i++){
-      if(dist(x, y, this.modes[i].x,this.modes[i].y) < this.radiusCheckModes && !this.dissolving){
+      if(this.modes[i].isOver() && !this.dissolving){
         console.log(this.modes[i].text + " clicked");
         this.modes[i].selected();
       }
@@ -133,14 +128,14 @@ class FilterChordsPage{
     
     //chord types
     for(let i = 0; i < this.chordsList.length; i++){
-      if(dist(x, y, this.chordsList[i].x,this.chordsList[i].y) < this.radiusCheckChords && !this.dissolving){
+      if(this.chordsList[i].isOver() && !this.dissolving){
         console.log(this.chordsList[i].text + " clicked");
         this.chordsList[i].selected();
       }
     }
     
     //all chord types
-    if(dist(x, y, this.x_all_chords, this.y_all_chords) < this.radiusCheckChords && !this.dissolving){  
+    if(this.allChordButton.isOver() && !this.dissolving){  
       console.log("all_chords clicked");
 
       this.all_chords = !this.all_chords;
@@ -150,7 +145,7 @@ class FilterChordsPage{
     }
     
     //all modes
-    if(dist(x, y, this.x_all_modes, this.y_all_modes) < this.radiusCheckModes && !this.dissolving){ 
+    if(this.allModesButton.isOver() && !this.dissolving){ 
       console.log("all_modes clicked");
  
       this.all_modes = !this.all_modes;
@@ -160,7 +155,7 @@ class FilterChordsPage{
     }  
 
     //go
-    if(dist(x, y, this.x_all_modes, windowHeight * 0.94) < this.radiusCheckModes && !this.dissolving){ 
+    if(this.nextPhaseButton.isOver() && !this.dissolving){ 
       console.log("dissolve clicked");
       this.dissolve();
     } 

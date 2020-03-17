@@ -43,8 +43,8 @@ let radius;
 let is;
 
 //Coords for netx interval
-let x_next_currentRoot;
-let y_next_currentRoot;
+let x_currentRoot;
+let y_currentRoot;
 
 // current index current root in rootList
 let curr_index = -1;
@@ -84,9 +84,26 @@ let x_intTrain;
 let y_intTrain;
 let intTrain;
 
+//Coords for netx mode
+let x_next_mode;
+let y_next_mode;
+let nextModeText;
 
-//Checl radius for click in clickable texts
-let radiusNextButtons;
+//Coords for next type of chords
+let x_next_chordType;
+let y_next_chordType;
+let nextChordTypeText;
+
+//Coords for next type of chords
+let x_next_chord;
+let y_next_chord;
+let nextChordText;
+
+
+//Coords for next type of chords
+let x_chord;
+let y_chord;
+let chordText;
 
 //Oscillator
 let wave;
@@ -113,17 +130,24 @@ function setup(){
   radius = windowHeight * 0.15;
   colJet = color(50, 41, 47); // Dark Brown
   background(colJet);
-  radiusNextButtons = 0.06;
   x_next_interval = 0.9;
   y_next_interval = 0.8;
   x_next_root = 0.9;
   y_next_root = 0.6;
-  x_next_currentRoot = 0.9;
-  y_next_currentRoot = 0.4;
+  x_currentRoot = 0.9;
+  y_currentRoot = 0.4;
+  x_chord = 0.9;
+  y_chord = 0.25;
   x_chordsTrain = 0.25;
   y_chordsTrain = 0.5;
   x_intTrain = 0.75;
   y_intTrain = 0.5;
+  x_next_mode = 0.9;
+  y_next_mode = 0.9;
+  x_next_chordType = 0.9;
+  y_next_chordType = 0.75;
+  x_next_chord = 0.9;
+  y_next_chord = 0.6;
   wave = new Tone();
   steps = 15;
 }
@@ -135,11 +159,11 @@ function draw() {
   //If type of zen mode phase
   if(phase == -1){
     if(chordTrain == undefined){
-      chordTrain = new ClickableText("Chord based training", x_chordsTrain, y_chordsTrain, radiusNextButtons, 30);
+      chordTrain = new ClickableText("Chord based training", x_chordsTrain, y_chordsTrain, 30);
     }
 
     if(intTrain == undefined){
-      intTrain = new ClickableText("Interval based training", x_intTrain, y_intTrain, radiusNextButtons, 30);
+      intTrain = new ClickableText("Interval based training", x_intTrain, y_intTrain, 30);
     }
 
     //shows the two buttons for the type of drill (chord/interval)
@@ -152,8 +176,8 @@ function draw() {
 
       //the intervals the user selected
       activeIntervals = [];
-      nextRootText = new ClickableText("Change root", x_next_root, y_next_root,radiusNextButtons, fontsize1);
-      nextIntervalText = new ClickableText("Change interval", x_next_interval, y_next_interval,radiusNextButtons, fontsize1)
+      nextRootText = new ClickableText("Change root", x_next_root, y_next_root, fontsize1);
+      nextIntervalText = new ClickableText("Change interval", x_next_interval, y_next_interval, fontsize1)
 
       //take only the active ones
       intervalsSet.forEach(function(element){
@@ -165,7 +189,7 @@ function draw() {
       //At least one set of intervals must be selected
       if(activeIntervals.length > 0){
         //create the home button to homepage
-        home = new ClickableText("Catch the pitch", 0.5, 0.1, radiusNextButtons * 3, fontsize1);
+        home = new ClickableText("Catch the pitch", 0.5, 0.1, fontsize1);
         //create the circle of intervals
         is = new IntervalSelector(activeIntervals);
         //initialize the first interval
@@ -194,6 +218,10 @@ function draw() {
   }else if(phase == 2){ // chords drill
     if(cf == undefined){ //first run of the branch, setup chord drill
 
+      nextModeText = new ClickableText("New mode", x_next_mode, y_next_mode, fontsize1);
+      nextChordTypeText = new ClickableText("New chord type", x_next_chordType, y_next_chordType, fontsize1);
+      nextChordText = new ClickableText("New chord", x_next_chord, y_next_chord, fontsize1);
+
       //the active set of type of chords
       let activeSetGrades = [];
 
@@ -217,13 +245,15 @@ function draw() {
       //if there's type of chords to be shown
       if(activeSetGrades.length > 0){
         //create homepage button
-        home = new ClickableText("Catch the pitch", 0.5, 0.1, radiusNextButtons * 3, fontsize1);
+        home = new ClickableText("Catch the pitch", 0.5, 0.1, fontsize1);
         //define a new root among all possible notes
         newRandomRoot();
         //create circle of fifth
         cf = new FifthCircle(activeSetGrades, activeModes);
+        cf.newChord();
+        chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
         //create the answers bar, passing the active type of chords selected
-        checkBox = new ProgressBar(cf.type.filler.length);
+        checkBox = new ProgressBar(cf.type.filler.length, false);
       }
     }else{ //the page has already been initialized
 
@@ -235,6 +265,11 @@ function draw() {
       checkBox.show();
       //show the homepage button
       home.show();
+
+      nextModeText.show();
+      nextChordTypeText.show();
+      nextChordText.show();
+      chordText.show();
     }
   }else if(!fp.invisible()){ // if the phase is 0 and fp is not invisible, show the page of filters
     fp.render();
@@ -268,6 +303,21 @@ function mouseClicked(){
   }else if(nextIntervalText != undefined && nextIntervalText.isOver()){ // if there's a next interval button and it's pressed, change interval
     is.newInterval();
     console.log("nextIntervalText clicked");
+  }else if(nextModeText != undefined && nextModeText.isOver()){
+    cf.newMode();
+    cf.newChord();
+    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
+    checkBox.reset(cf.type.filler.length);
+    console.log("nextModeText clicked");
+  }else if(nextChordText != undefined && nextChordText.isOver()){
+    cf.newChord();
+    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
+    checkBox.reset(cf.type.filler.length);
+    console.log("nextChordText clicked");
+  }else if(nextChordTypeText != undefined && nextChordTypeText.isOver()){
+    cf.newChordType();
+    checkBox.reset(cf.type.filler.length);
+    console.log("nextChordTypeText clicked");
   }else if(currentRoot != undefined && currentRoot.isOver()){ // if the current root is showing and it's pressed, the oscillator play the tone related to the note
     wave.play(currentRoot.text);
   }else if(is != undefined){ // if the interval selector is active
@@ -276,9 +326,15 @@ function mouseClicked(){
       is.newInterval();
     }
   }else if(cf != undefined){// if the circle of fifth is showing, create a new random root, a new mode and a new answer
-    newRandomRoot();
-    cf.newMode();
-    checkBox.newAnswer(int(random(1,2.99999)),currentRoot.text, cf.idx_mode.text);
+    checkBox.newAnswer(int(random(1,2.99999)),currentRoot.text, cf.idx_mode.text, cf.type.filler);
+    
+    if(checkBox.allAnswersFull()){
+      newRandomRoot();
+      cf.newMode();
+      cf.newChord();
+      chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
+    }
+
   }
 
   return false;
@@ -302,7 +358,7 @@ function newRoot(){
   //get a random new root FROM THE FILTERS OF INTERVALS until (the current index is different respect the previous one AND the previous one is available)
   do{
     newIndex = floor(random(1) * fp.roots.length);
-    currentRoot = new ClickableText(fp.roots[newIndex].text, x_next_currentRoot, y_next_currentRoot, radiusNextButtons, fontsize1);
+    currentRoot = new ClickableText(fp.roots[newIndex].text, x_currentRoot, y_currentRoot, fontsize1);
   }while(curr_index >= 0 && newIndex == curr_index);
 
   curr_index = newIndex;
@@ -317,7 +373,7 @@ function newRandomRoot(){
   //get a random new root FROM THE 12 NOTES until (the current index is different respect the previous one AND the previous one is available)
   do{
     newIndex = floor(random(1) * rootsList.length);
-    currentRoot = new ClickableText(rootsList[newIndex], x_next_currentRoot, y_next_currentRoot, radiusNextButtons, fontsize1);
+    currentRoot = new ClickableText(rootsList[newIndex], x_currentRoot, y_currentRoot, fontsize1);
   }while(curr_index >= 0 && newIndex == curr_index);
 
   curr_index = newIndex;
