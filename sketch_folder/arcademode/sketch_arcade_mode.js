@@ -16,7 +16,7 @@ let radius;
 //Interval selector object
 let is;
 //Intervals to be shown
-let intervalsVector = ['M3', 'm3', 'm6', 'M6', 'P4', 'P5', 'm7', 'P8','PU', 'M7'];
+let intervalsVector = ['M3', 'm3', 'm6', 'M6', 'P4', 'P5', 'm7', 'P8','P1', 'M7'];
 let rootNotesVector = ['C4', 'D4', 'E4', 'F4', 'G4',
   'A4', 'B4', 'Db4', 'bb4', 'Gb4', 'Ab4', 'Bb4'];
 let currentRoot, rootText, currentInterval;

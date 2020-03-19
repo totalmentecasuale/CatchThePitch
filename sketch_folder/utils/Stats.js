@@ -12,7 +12,7 @@ class Stats{
       this.limited = true;
     }
     this.statsString = 'Correct / Total answers: ' + this.correct + ' / ' + this.total;
-    this.statsText = new ClickableText(this.statsString, 0.85, 0.02, 14);
+    this.statsText = new ClickableText(this.statsString, 0.85, 0.1, 24);
   }
 
   render(){

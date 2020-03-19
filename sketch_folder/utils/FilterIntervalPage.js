@@ -44,9 +44,9 @@ class FilterIntervalPage{
     this.tGrow = true;
 
 
-    this.allIntervalsButton = new ClickableText("All", this.x_all_intervals, this.y_all_intervals, fontsize1);
-    this.allRootsButton = new ClickableText("All", this.x_all_roots, this.y_all_roots, fontsize1);
-    this.nextPhaseButton = new ClickableText("Go", this.x_all_roots, this.y_all_roots * 1.2, fontsize1);
+    this.allIntervalsButton = new ClickableText("All", this.x_all_intervals, this.y_all_intervals, fontsize1, undefined, false, fontGameTime);
+    this.allRootsButton = new ClickableText("All", this.x_all_roots, this.y_all_roots, fontsize1, undefined, false, fontGameTime);
+    this.nextPhaseButton = new ClickableText("Go", this.x_all_roots, this.y_all_roots * 1.2, fontsize1, undefined, true);
   }
   
   render(){
@@ -59,22 +59,30 @@ class FilterIntervalPage{
 
     //if still visible, render it
     if(!this.invisible()){
-      noStroke();
-      textSize(fontsize1);
-      if(this.t == 255){this.tGrow = false;}
+      if(this.t >= 255){this.tGrow = false;}
       if(this.t <= 150){this.tGrow = true;}
-      if(this.tGrow){this.t++;}else{this.t--;}
+      if(this.tGrow){this.t+=2;}else{this.t-=2;}
       //Show the first title for intervals
       var titleCol = color(this.t, this.t - 50, this.t, this.opac);
+      push();
+      noStroke();
+      textFont(fontFakeHope);
+      textSize(fontsize1);
       fill(titleCol);
-      text(zenIntervalTextTypes, windowWidth / 2, windowHeight * 0.05);
+      text(zenIntervalTextTypes, windowWidth * 0.5, windowHeight * 0.05);
+      pop();
       //show the intervals
       this.showIntervals();
 
       //Show the second title for roots
+      push();
+      noStroke();
+      textFont(fontFakeHope);
       textSize(fontsize1);
       fill(titleCol);
-      text(zenIntervalTextRoots, windowWidth / 2, windowHeight / 2 * 0.9 );
+      text(zenIntervalTextRoots, windowWidth * 0.5, windowHeight * 0.45 );
+      pop();
+
       //show the roots
       this.showRoots();
       
@@ -86,7 +94,7 @@ class FilterIntervalPage{
 
 
       //Show "Go" to next phase
-      this.nextPhaseButton.show(this.opac);
+      this.nextPhaseButton.show(this.opac)
     }else{//the filters are set and the page dissolved totally, next phase starts
       phase = 1;
     }

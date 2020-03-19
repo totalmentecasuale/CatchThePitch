@@ -32,30 +32,59 @@ class ProgressBar{
    }
   }
 
-  newAnswer(status, root, interval, chordType = undefined){
+  newAnswer(status, answerFundNote, interval, chordType = undefined, currentChord = undefined){
     console.log(interval + ' in Answer');
-   let answerIdx = 0;
-   let answers = [];
+    let answerIdx = 0;
+    let answers = [];
 
-   // for all the answers
-   let found = false;
-   for(let i = 0; i < this.cells.length; i++){
-     // find the one active and with status 0
-     if(this.cells[i].active && this.cells[i].status == 0 && !found){
+    // for all the answers
+    let found = false;
+    let actualCorrectAnswer = currentChord != undefined ? teoria.note(currentChord.text + "3") : currentRoot;
+    for(let i = 0; i < this.cells.length; i++){
+      // find the one active and with status 0
+      if(this.cells[i].active && this.cells[i].status == 0 && !found){
         //save the index
-       answerIdx = i;
-       //update the status
-       this.statusCells[i] = status;
-       if(this.additive){
-        answers.push(new ClickableText(flatify(root.toString(true).toUpperCase())  + " " + interval, 0.2, this.cells[i].y / windowHeight, 24));
-       }else{
-        answers.push(new ClickableText(chordType[i], 0.2, this.cells[i].y / windowHeight, 24));
-       }
-       found = true;
-     }else{
-      //get the related answer
-      answers.push(this.cells[i].answer);
-     }
+        answerIdx = i;
+        //update the status
+        this.statusCells[i] = status;
+        if(this.additive){
+          actualCorrectAnswer = actualCorrectAnswer.interval(interval);
+          answers.push(new ClickableText(flatify(answerFundNote.toString(true).toUpperCase()) + 
+                                         " (" + flatify(actualCorrectAnswer.toString(true).toUpperCase()) + 
+                                         " [" + interval + "-" + 
+                                         flatify(currentRoot.toString(true).toUpperCase()) + "])", 0.2, this.cells[i].y / windowHeight, 24));
+        }else{
+          let offset = 0;
+          if(currentChord != undefined){
+            if(currentChord.status == MINOR){
+              offset = 1;
+            }else if(currentChord.status == DIM){
+              offset = 2;
+            }
+          }
+          actualCorrectAnswer = actualCorrectAnswer.interval(chordType[i][offset]);
+          answers.push(new ClickableText(flatify(answerFundNote.toString(true).toUpperCase()) + 
+                                         " (" + flatify(actualCorrectAnswer.toString(true).toUpperCase()) + 
+                                         " [" + chordType[i][offset] + "-" + 
+                                         flatify(currentRoot.toString(true).toUpperCase()) + "])", 
+                                              0.2, this.cells[i].y / windowHeight, 24));
+        }
+        found = true;
+      }else{
+        //get the related answer
+        answers.push(this.cells[i].answer);
+        if(!this.additive){
+          let offset = 0;
+          if(currentChord != undefined){
+            if(currentChord.status == MINOR){
+              offset = 1;
+            }else if(currentChord.status == DIM){
+              offset = 2;
+            }
+          }
+        actualCorrectAnswer = actualCorrectAnswer.interval(chordType[i][offset]);
+        }
+      }
 
    }
 

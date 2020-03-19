@@ -6,8 +6,11 @@ let zenChordTextTypes = "Choose one or more groups of type of chords for this dr
 let zenChordTextModes = "Choose one or more modes";
 
 //Font sizes
-let fontsize1 = 34;
-let fontsize2 = 28;
+let fontsize1 = 40;
+let fontsize2 = 33;
+let fontFakeHope;
+let fontGameTime;
+
 
 //Filter page
 let fp;
@@ -23,7 +26,7 @@ let cnv;
 //The set of intervals available
 let intervalsSet = [[['P4', 'P5', 'M6', 'm6'], false, 0, 0],
                     [['m7', 'M7', 'P8'], false, 0, 0], 
-                    [['PU','m3','M3'], false, 0, 0]];
+                    [['P1','m3','M3'], false, 0, 0]];
 
 //The set of root notes (Do not change the order)
 let rootsList = ['A', 'D', 'G', 'C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E'];
@@ -33,7 +36,8 @@ let modesList = [[['Lydian'], false, 0],[['Ionian'], false, 1], [['Mixolydian'],
                   [['Dorian'], false, 3], [['Aeolian'], false, 4], [['Phrygian'], false, 5], [['Locrian'], false, 6]];
 
 //The set of possible types of chords
-let chordsList = [[['Triads'],false, [1,3,5]], [['7th Chords'], false, [1,3,5,7]]];
+let chordsList = [[['Triads'],false, [['P1','P1','P1'],['M3','m3','m3'],['m3','M3','m3']]], 
+                  [['7th Chords'], false, [['P1','P1','P1'],['M3','m3','m3'],['m3','M3','m3'], ['M3', 'm3','M3']]]];
 
 //the state of the setup (-1 = chord/interval, 0 = choice of the filters, 1,2 = zen mode play)
 let phase = -1;
@@ -46,6 +50,7 @@ let is;
 //Coords for netx interval
 let x_currentRoot;
 let y_currentRoot;
+let rootText;
 
 // current index current root in rootList
 let curr_index = -1;
@@ -115,6 +120,12 @@ let steps;
 //the answer cells
 let checkBox;
 
+let mic;
+let answerButton;
+let voiceFreqGraph;
+let correctnessText;
+
+
 
 function centerCanvas() {
   var x = (windowWidth - width) / 2;
@@ -125,7 +136,9 @@ function centerCanvas() {
 function setup(){
   cnv = createCanvas(windowWidth, windowHeight);
   centerCanvas();
-  textFont("fontGameTime");
+  fontFakeHope = loadFont("../assets/FakeHope.ttf");
+  fontGameTime = loadFont("../assets/game_time.ttf");
+  textFont('Noto Sans JP');
   textSize(fontsize1);
   textAlign(CENTER, CENTER);
   radius = windowHeight * 0.15;
@@ -150,7 +163,8 @@ function setup(){
   x_next_chord = 0.9;
   y_next_chord = 0.6;
   wave = new Tone();
-  steps = 15;
+  mic = new Microphone();
+  answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
 }
 
 
@@ -160,11 +174,11 @@ function draw() {
   //If type of zen mode phase
   if(phase == -1){
     if(chordTrain == undefined){
-      chordTrain = new ClickableText("Chord based training", x_chordsTrain, y_chordsTrain, 30);
+      chordTrain = new ClickableText("Chord based training", x_chordsTrain, y_chordsTrain, fontsize1, undefined, false, fontGameTime);
     }
 
     if(intTrain == undefined){
-      intTrain = new ClickableText("Interval based training", x_intTrain, y_intTrain, 30);
+      intTrain = new ClickableText("Interval based training", x_intTrain, y_intTrain, fontsize1, undefined, false, fontGameTime);
     }
 
     //shows the two buttons for the type of drill (chord/interval)
@@ -177,8 +191,8 @@ function draw() {
 
       //the intervals the user selected
       activeIntervals = [];
-      nextRootText = new ClickableText("Change root", x_next_root, y_next_root, fontsize1);
-      nextIntervalText = new ClickableText("Change interval", x_next_interval, y_next_interval, fontsize1)
+      nextRootText = new ClickableText("Change root", x_next_root, y_next_root, fontsize2, undefined, false, fontGameTime);
+      nextIntervalText = new ClickableText("Change interval", x_next_interval, y_next_interval, fontsize2, undefined, false, fontGameTime)
 
       //take only the active ones
       intervalsSet.forEach(function(element){
@@ -190,7 +204,7 @@ function draw() {
       //At least one set of intervals must be selected
       if(activeIntervals.length > 0){
         //create the home button to homepage
-        home = new ClickableText("Catch the pitch", 0.5, 0.1, fontsize1);
+        home = new ClickableText("Catch the pitch", 0.5, 0.1, 55,undefined, true);
         //create the circle of intervals
         is = new IntervalSelector(activeIntervals);
         //initialize the first interval
@@ -198,6 +212,7 @@ function draw() {
         //initialize the root of reference
         newRoot();
         //create the answers bar
+        steps = 15;
         checkBox = new ProgressBar(steps);
       }
     }else{ //the page has already been initialized
@@ -210,18 +225,31 @@ function draw() {
       //show the change interval button
       nextIntervalText.show();
       //show the current root
-      currentRoot.show();
+      rootText.show();
       //show the answers bar
       checkBox.show();
       //show the homepage button
       home.show();
+      
+      if(voiceFreqGraph != undefined){
+        answerButton.show(map(voiceFreqGraph.opac, 0, 255, 255, 0));  
+      }else if(correctnessText != undefined && correctnessText.opac > 0){
+        correctnessText.show();
+        if(correctnessText.opac < 80){
+          answerButton.show(map(correctnessText.opac, 0, 80, 255, 0));  
+        }
+      }else{
+        answerButton.show(255);
+      }
+
+      checkMicAndManageAnswers();
     }
   }else if(phase == 2){ // chords drill
     if(cf == undefined){ //first run of the branch, setup chord drill
 
-      nextModeText = new ClickableText("New mode", x_next_mode, y_next_mode, fontsize1);
-      nextChordTypeText = new ClickableText("New chord type", x_next_chordType, y_next_chordType, fontsize1);
-      nextChordText = new ClickableText("New chord", x_next_chord, y_next_chord, fontsize1);
+      nextModeText = new ClickableText("New mode", x_next_mode, y_next_mode, fontsize2, undefined, false, fontGameTime);
+      nextChordTypeText = new ClickableText("New chord type", x_next_chordType, y_next_chordType, fontsize2, undefined, false, fontGameTime);
+      nextChordText = new ClickableText("New chord", x_next_chord, y_next_chord, fontsize2, undefined, false, fontGameTime);
 
       //the active set of type of chords
       let activeSetGrades = [];
@@ -246,22 +274,23 @@ function draw() {
       //if there's type of chords to be shown
       if(activeSetGrades.length > 0){
         //create homepage button
-        home = new ClickableText("Catch the pitch", 0.5, 0.1, fontsize1);
+        home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true);
         //define a new root among all possible notes
         newRandomRoot();
         //create circle of fifth
         cf = new FifthCircle(activeSetGrades, activeModes);
         cf.newChord();
-        chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
+        chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false, fontGameTime);
         //create the answers bar, passing the active type of chords selected
-        checkBox = new ProgressBar(cf.type.filler.length, false);
+        steps = cf.type.filler.length;
+        checkBox = new ProgressBar(steps, false);
       }
     }else{ //the page has already been initialized
 
       //show the circle of fifth
       cf.render();
       //show the current root
-      currentRoot.show();
+      rootText.show();
       //show the answer box
       checkBox.show();
       //show the homepage button
@@ -271,6 +300,18 @@ function draw() {
       nextChordTypeText.show();
       nextChordText.show();
       chordText.show();
+      if(voiceFreqGraph != undefined){
+        answerButton.show(map(voiceFreqGraph.opac, 0, 255, 255, 0));  
+      }else if(correctnessText != undefined && correctnessText.opac > 0){
+        correctnessText.show();
+        if(correctnessText.opac < 80){
+          answerButton.show(map(correctnessText.opac, 0, 80, 255, 0));  
+        }
+      }else{
+        answerButton.show(255);
+      }
+      checkMicAndManageAnswers();
+
     }
   }else if(!fp.invisible()){ // if the phase is 0 and fp is not invisible, show the page of filters
     fp.render();
@@ -307,35 +348,33 @@ function mouseClicked(){
   }else if(nextModeText != undefined && nextModeText.isOver()){
     cf.newMode();
     cf.newChord();
-    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
-    checkBox.reset(cf.type.filler.length);
+    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
+    steps = cf.type.filler.length;
+    checkBox.reset(steps);
     console.log("nextModeText clicked");
   }else if(nextChordText != undefined && nextChordText.isOver()){
     cf.newChord();
-    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
-    checkBox.reset(cf.type.filler.length);
+    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
+    steps = cf.type.filler.length;
+    checkBox.reset(steps);
     console.log("nextChordText clicked");
   }else if(nextChordTypeText != undefined && nextChordTypeText.isOver()){
     cf.newChordType();
-    checkBox.reset(cf.type.filler.length);
+    steps = cf.type.filler.length;
+    checkBox.reset(steps);
     console.log("nextChordTypeText clicked");
-  }else if(currentRoot != undefined && currentRoot.isOver()){ // if the current root is showing and it's pressed, the oscillator play the tone related to the note
-    wave.play(currentRoot.text);
-  }else if(is != undefined){ // if the interval selector is active
-    if(!is.checkIntervalsClicked() && checkBox != undefined){ // check if there's NO button clicked, simulates a new answer and change the interval
-      checkBox.newAnswer(int(random(1,2.99999)), currentRoot.text, is.intervals[is.lastSelected].text);
-      is.newInterval();
-    }
-  }else if(cf != undefined){// if the circle of fifth is showing, create a new random root, a new mode and a new answer
-    checkBox.newAnswer(int(random(1,2.99999)),currentRoot.text, cf.idx_mode.text, cf.type.filler);
-    
-    if(checkBox.allAnswersFull()){
-      newRandomRoot();
-      cf.newMode();
-      cf.newChord();
-      chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize1);
-    }
-
+  }else if(rootText != undefined && rootText.isOver()){ // if the current root is showing and it's pressed, the oscillator play the tone related to the note
+    wave.play(currentRoot.toString(true));
+  }else if((is != undefined && !is.checkIntervalsClicked() && checkBox != undefined) || cf != undefined){
+    if(answerButton != undefined && answerButton.isOver()){//if the answer button is clicked, start recording data from microphone
+      if(checkBox.allAnswersFull()){
+        checkBox.reset(steps);
+        answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
+      }else{
+        mic.record();
+        voiceFreqGraph = new VoiceGraph();
+      }
+    } 
   }
 
   return false;
@@ -355,16 +394,24 @@ function windowResized() {
 function newRoot(){
 
   let newIndex;
-
+  let activeRoots = [];
+  fp.roots.forEach(function(e){
+    if(e.checked){
+      activeRoots.push(e);
+    }
+  });
   //get a random new root FROM THE FILTERS OF INTERVALS until (the current index is different respect the previous one AND the previous one is available)
   do{
-    newIndex = floor(random(1) * fp.roots.length);
-    currentRoot = new ClickableText(fp.roots[newIndex].text, x_currentRoot, y_currentRoot, fontsize1);
-  }while(curr_index >= 0 && newIndex == curr_index);
+    newIndex = floor(random(1) * activeRoots.length);
+    currentRoot = teoria.note(activeRoots[newIndex].text + "3");
+    rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 
+                                  x_currentRoot, y_currentRoot, fontsize1, 
+                                  flatify(currentRoot.toString(true).toUpperCase()), false);
+  }while(curr_index >= 0 && newIndex == curr_index && activeRoots.length > 1);
 
   curr_index = newIndex;
 
-  wave.play(currentRoot.text);
+  wave.play(currentRoot.toString(true));
 }
 
 function newRandomRoot(){
@@ -374,12 +421,15 @@ function newRandomRoot(){
   //get a random new root FROM THE 12 NOTES until (the current index is different respect the previous one AND the previous one is available)
   do{
     newIndex = floor(random(1) * rootsList.length);
-    currentRoot = new ClickableText(rootsList[newIndex], x_currentRoot, y_currentRoot, fontsize1);
-  }while(curr_index >= 0 && newIndex == curr_index);
+    currentRoot = teoria.note(rootsList[newIndex] + "3");
+    rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 
+                                  x_currentRoot, y_currentRoot, 
+                                  fontsize1, flatify(currentRoot.toString(true).toUpperCase()), false);
+  }while(curr_index >= 0 && newIndex == curr_index && rootsList.length > 1);
 
   curr_index = newIndex;
 
-  wave.play(currentRoot.text);
+  wave.play(currentRoot.toString(true));
 }
 
 function flatify(s){
@@ -389,3 +439,71 @@ function flatify(s){
    }
    return s;
  }
+
+ function newQuestion(answer, answerNote){
+  if(is != undefined){//interval section
+    //we pass the answer, the root, the interval
+    checkBox.newAnswer(answer, answerNote, is.intervals[is.lastSelected].text);
+    is.newInterval();
+  }else if(cf != undefined){//chords section
+    //we pass the answer, the root, the mode, the reference to the type of chord, the chord selected from the circle of fifth
+    checkBox.newAnswer(answer, answerNote, cf.idx_mode.text, cf.type.filler, cf.chord);
+    if(checkBox.allAnswersFull()){//if the progress bar is full, reset the context
+      newRandomRoot();
+      cf.newMode();
+      cf.newChord();
+      chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
+      answerButton = new ClickableText("Reset answers bar", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
+    }
+  }
+}
+
+function checkMicAndManageAnswers(){
+  let fundFreq = mic.getAnswerFreq();
+  if(voiceFreqGraph != undefined){
+    voiceFreqGraph.setData(mic.corrBuff);
+    voiceFreqGraph.show();
+  }
+
+  if(correctnessText != undefined && correctnessText.opac > 0){
+    correctnessText.opac = constrain(correctnessText.opac - 1.5, 0, 255);
+  }else{
+    correctnessText = undefined;
+  }
+  if(fundFreq > 0){
+    voiceFreqGraph = undefined;
+    let textToShow = "";
+    let fundNote = teoria.note.fromFrequency(fundFreq);
+    let correctInterval;
+    let root;
+    if(is != undefined){//inteval section
+      correctInterval = teoria.interval(is.intervals[is.lastSelected].text);
+      root = currentRoot;
+    }else if(cf != undefined){//chord section
+      //create a note from the root of the selected chord
+      root = teoria.note(cf.chord.text + "3");
+      //update the last interval chord information as summation of intervals respect to the answers already given
+      cf.updateLastIntervalChord(checkBox);
+      correctInterval = cf.lastIntervalChord;
+    }
+
+    //calculate interval of provided answer
+    let answeredInterval = teoria.interval(root, fundNote.note);
+    //compare the intervals' semitones to decide the correctness of the answer
+    let answer = correctInterval.semitones() === answeredInterval.semitones() ? 1 : 2;
+    if(answer == 1){
+      let precision = map(abs(fundNote.cents), 0, 50, 100, 0);
+      textToShow = "Correct! Precision is " + precision.toFixed(2) + "%";
+      if(precision < 85){
+        textToShow = textToShow + "\n(by the way, a bit out of tune: " + fundNote.cents.toFixed(2) + " cents)";
+      }
+    }else if(answer == 2){
+      textToShow = "Wrong! You just sang a " + flatify(fundNote.note.toString(true).toUpperCase()) + " (" +fundFreq.toFixed(2) + " Hz)"; 
+    }
+    correctnessText = new ClickableText(textToShow, 0.5, 0.9, fontsize1);
+    //console.log(answer, answeredInterval.toString(), answeredInterval.semitones(), correctInterval.toString(), correctInterval.semitones())
+    //update the current question and provide a new question
+    newQuestion(answer, fundNote.note);
+    mic.resetBuffer();
+  }
+}
