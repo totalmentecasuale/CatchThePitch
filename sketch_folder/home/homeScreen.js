@@ -1,5 +1,5 @@
 class gameButton {
-  constructor(bText, bWidth, posX, posY, id, ord){
+  constructor(bText, bWidth, posX, posY, id, ord, descr){
     this.bText = bText;
     this.posX = posX;
     this.posY = posY;
@@ -8,6 +8,7 @@ class gameButton {
     this.id = id;
     this.ord = ord;
     this.butt = createGraphics(this.bWidth, this.bHeight);
+    this.popup = new PopUp(descr);
   }
 
   render(){
@@ -15,6 +16,9 @@ class gameButton {
     imageMode(CENTER);
     image(this.butt, this.posX, this.posY);
     //-----------------------------------
+    if(this.isOver()){
+      this.popup.show(this.posX, this.posY, this.bWidth);
+    }
   }
 
   update(){
@@ -39,8 +43,6 @@ class gameButton {
     var curDiv = selectAll("#",this.id);
     //curDiv.position(this.posX, this.posY);
     // this.butt.parent(this.id); this function doesn't work
-
-
     //-----------------------------------
   }
 
@@ -52,7 +54,6 @@ class gameButton {
   }
   isOver(){
     if(mouseX > this.posX - this.bWidth/2 && mouseX < this.posX + this.bWidth/2 && mouseY > this.posY - this.bHeight/2 && mouseY < this.posY + this.bHeight/2){
-        console.log('pressed the', this.bText, 'button');
         return true;
       }
       return false;
