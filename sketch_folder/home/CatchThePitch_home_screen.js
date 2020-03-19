@@ -81,11 +81,11 @@ function draw() {
   //-- AM --------------
   ps.runPS();
   //---------------------------
-  //---------------------------
+
   //Title Text-----------------
-  if(t == 255){tGrow = false;}
+  if(t >= 255){tGrow = false;}
   if(t <= 150){tGrow = true;}
-  if(tGrow){t++;}else{t--;}
+  if(tGrow){t+=2;}else{t-=2;}
   var titleCol = color(t, t - 50, t);
   fill(titleCol);
   text('Catch the Pitch', width/2, height * 0.1);
@@ -103,6 +103,7 @@ function draw() {
 function mouseClicked(){
   if(bAtc.isOver()){
     console.log('pressed the', bAtc.bText, 'button');
+    setTimeout(function(){location.href='../index_againstclock_mode.html';}, 1000);
     ps.explodePS();
     return false;
   }
