@@ -56,26 +56,23 @@ function setup() {
   var bHeight = lerp(height * 0.15, height, 0.2);
   var bSize = 0;
   var buttonNames = ["Against the Clock", "Arcade Mode", "Zen Mode", "About"];
+  var buttonDescr = ["Score as many points as you can in two minutes", "You lose a life for every mistake you make, time is not your enemy here",
+    "Take as much time as you want practising intervals or chords in this mode",
+    "Behind the scenes of the creation of this game"
+  ];
   buttonNames.forEach((item) => {
-
       if(textWidth(item) > bSize){
         bSize = textWidth(item);
-
-    }
+      }
   });
-
-  bAtc = new gameButton(buttonNames[0], bSize, width/2, bHeight, 'bAtc', 1);
+  bSize += 20;
+  bAtc = new gameButton(buttonNames[0], bSize, width/2, bHeight, 'bAtc', 1, buttonDescr[0]);
   bHeight = lerp(height * 0.15, height, 0.4);
-  bArcade = new gameButton(buttonNames[1], bSize, width/2, bHeight, 'bArcade', 2);
+  bArcade = new gameButton(buttonNames[1], bSize, width/2, bHeight, 'bArcade', 2, buttonDescr[1]);
   bHeight = lerp(height * 0.15, height, 0.6);
-  bZen = new gameButton(buttonNames[2], bSize, width/2, bHeight, 'bZen', 3);
+  bZen = new gameButton(buttonNames[2], bSize, width/2, bHeight, 'bZen', 3, buttonDescr[2]);
   bHeight = lerp(height * 0.15, height, 0.8);
-  bAbout = new gameButton(buttonNames[3], bSize, width/2, bHeight, 'bAbout', 4);
-  //------------------
-
-  // //Prog bar
-  // var barPos = createVector(width/2, height * 0.18);
-  // progBar = new Bar(10000, barPos);
+  bAbout = new gameButton(buttonNames[3], bSize, width/2, bHeight, 'bAbout', 4, buttonDescr[3]);
 }
 
 function draw() {
@@ -86,9 +83,9 @@ function draw() {
   //---------------------------
   //---------------------------
   //Title Text-----------------
-  if(t >= 255){tGrow = false;}
+  if(t == 255){tGrow = false;}
   if(t <= 150){tGrow = true;}
-  if(tGrow){t+=2;}else{t-=2;}
+  if(tGrow){t++;}else{t--;}
   var titleCol = color(t, t - 50, t);
   fill(titleCol);
   text('Catch the Pitch', width/2, height * 0.1);
@@ -105,24 +102,27 @@ function draw() {
 
 function mouseClicked(){
   if(bAtc.isOver()){
+    console.log('pressed the', bAtc.bText, 'button');
     ps.explodePS();
-    setTimeout(function(){location.href='../index_againstclock_mode.html';}, 1000);
     return false;
   }
 
   if(bArcade.isOver()){
+    console.log('pressed the', bArcade.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_arcade_mode.html';}, 1000);
     return false;
   }
 
   if(bZen.isOver()){
+    console.log('pressed the', bZen.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_zen_mode.html';}, 1000);
     return false;
   }
 
   if(bAbout.isOver()){
+    console.log('pressed the', bAbout.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='https://github.com/totalmentecasuale/CatchThePitch/blob/master/README.md';}, 1000);
     return false;
