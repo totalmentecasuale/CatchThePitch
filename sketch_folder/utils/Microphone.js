@@ -46,7 +46,6 @@ class Microphone{
 					this.bufferFundFrequencies = this.bufferFundFrequencies.filter(function(e){ return e > 0;});
 				}
 				varBuffer = this.varianceFreq();
-				console.log(varBuffer)
 
 				//Go in loop till variance is acceptable or the number of samples is still guaranteed
 			}while(varBuffer > this.maxAcceptableVariance && this.bufferFundFrequencies.length > this.minBuffLen);

@@ -10,6 +10,9 @@ class Bar{
     this.started = false;
     //Color
     this.blueBello = color(53, 69, 158);
+    this.redWarn = color(230, 80, 80);
+    this.lastColor = this.blueBello;
+    this.angle = 0;
   }
 
   update(){
@@ -28,6 +31,7 @@ class Bar{
   render(){
 
     this.updateDispVariables();
+    
     stroke(255);
     strokeWeight(10);
     //Whole bar
@@ -36,7 +40,16 @@ class Bar{
     line(x, y, x + this.wholeLength, y);
     //Current time bar
     if(this.getTime() <= this.endTime){
-      stroke(this.blueBello);
+      if(this.currentLength < this.wholeLength * 0.3 && this.started){ // 10% of total time
+        let f = map(this.currentLength, 0, this.wholeLength * 0.3, 50, 10);
+        let rf = (cos(radians(this.angle)) + 1) / 2;
+        let bf = (-cos(radians(this.angle)) + 1) / 2;
+        this.lastColor = color((rf * red(this.redWarn))+ (bf * red(this.blueBello)),
+                               (rf * green(this.redWarn)) + (bf * green(this.blueBello)), 
+                               (rf * blue(this.redWarn)) + (bf * blue(this.blueBello)));
+        this.angle+=f;
+      }
+      stroke(this.lastColor);
     }
     line(x, y, x + this.currentLength, y);
   }
