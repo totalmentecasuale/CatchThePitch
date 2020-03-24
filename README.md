@@ -1,5 +1,4 @@
 # CatchThePitch
-Advanced Coding Tools and Methodologies project, A.Y. 2019/2020
 
 With this web app we aim at helping people internalize musical intervals through a didactic game.
 
