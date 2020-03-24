@@ -117,8 +117,8 @@ function setup(){
   stats = new Stats();
   home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true);
   gameOver = false;
-  backHomeButton = new ClickableText("Back to home", 0.65, 0.5, fontsize, undefined, false, fontGameTime);
-  restartButton = new ClickableText("Restart", 0.35, 0.5, fontsize, undefined, false, fontGameTime);
+  backHomeButton = undefined;
+  restartButton = undefined;
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
 
 
@@ -173,12 +173,13 @@ function newQuestion(answer, answerNote){
   currentRoot = teoria.note(selectedNote + "3");
   let index = int((random(intervalsVector.length) * 50) % intervalsVector.length);
   is.selectInterval(index);
-  rootText.update(flatify(currentRoot.toString(true).toUpperCase()));
+  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 50);
   
   answered = false;
-
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
+  if(!gameOver){
+    wave.play(currentRoot.toString(true));
+    setTimeout(function() {startBar();}, wave.t2 * 1000);
+  }
 }
 
 function createLivesVector(){
