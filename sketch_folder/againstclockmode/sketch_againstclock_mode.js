@@ -40,6 +40,8 @@ let correctnessText;
 
 let home;
 
+let countdown;
+
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
   // is loaded before setup() and draw() are called
@@ -75,22 +77,20 @@ function setup(){
   steps = 15;
   checkBox = new ProgressBar(steps);
 
-   // Sound
-   wave = new Tone();
+  // Sound
+  wave = new Tone();
 
-   // Intervals setup
+  // Intervals setup
   is = new IntervalSelector(intervalsVector);
   is.newInterval();
 
-// First root setup
+  // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
   currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
 
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
-// Font setup
+  // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
   textAlign(CENTER, CENTER);
@@ -103,12 +103,13 @@ function setup(){
 
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
   home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true);
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
 
 }
 
 
 function draw(){
-
   background(colJet);
   if(!dead){
     if(timeBar.isOver() && timeBar.started){
@@ -220,6 +221,18 @@ function generalRender(){ // Non so se è una buona idea
     mic.resetBuffer();
   }
 
+  if(countdown != undefined && !countdown.isOver()){
+    push();
+    fill(red(colJet), green(colJet), blue(colJet), 220);
+    rect(0,0, windowWidth, windowHeight);
+    pop();
+    countdown.render();
+  }else if(countdown != undefined){
+    countdown = undefined;
+    wave.play(currentRoot.toString(true));
+    setTimeout(function() {startBar();}, wave.t2 * 1000);
+  }
+
 }
 
 function death(){ // Triggers death event
@@ -263,8 +276,6 @@ function restart(){
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
 
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
 // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
@@ -276,4 +287,6 @@ function restart(){
   dead = false;
   backHomeButton = undefined;
   restartButton = undefined;
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
 }

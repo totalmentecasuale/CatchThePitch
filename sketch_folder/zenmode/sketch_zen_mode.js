@@ -351,17 +351,20 @@ function mouseClicked(){
     chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
     steps = cf.type.filler.length;
     checkBox.reset(steps);
+    answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
     console.log("nextModeText clicked");
   }else if(nextChordText != undefined && nextChordText.isOver()){
     cf.newChord();
     chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
     steps = cf.type.filler.length;
     checkBox.reset(steps);
+    answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
     console.log("nextChordText clicked");
   }else if(nextChordTypeText != undefined && nextChordTypeText.isOver()){
     cf.newChordType();
     steps = cf.type.filler.length;
     checkBox.reset(steps);
+    answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
     console.log("nextChordTypeText clicked");
   }else if(rootText != undefined && rootText.isOver()){ // if the current root is showing and it's pressed, the oscillator play the tone related to the note
     wave.play(currentRoot.toString(true));
@@ -374,6 +377,7 @@ function mouseClicked(){
         mic.record();
         voiceFreqGraph = new VoiceGraph();
       }
+
     } 
   }
 
