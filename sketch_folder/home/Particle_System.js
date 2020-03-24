@@ -9,10 +9,10 @@ class ParticleSystem {
 
   createPS(){
     for(var x = 0; x<=width; x++){
-      if(x < width/2){
-        this.amp+= 0.2;
+      if(x < width/4 || (x < 3*width/4 && x > width/2)){
+        this.amp+= 0.3;
       }else{
-        this.amp-= 0.2;
+        this.amp-= 0.3;
       }
       var y = this.amp * sin(x * 600/* * millis()/100000000*/);
       this.particles.push(new Particle(createVector(x,y), this.amp));
@@ -22,36 +22,33 @@ class ParticleSystem {
   }
 
   runPS(){
+    push();
     this.particles.forEach(function(item, idx){
       if(item.isDead()){ps.kill(idx);}
       item.run();
     });
     this.render();
+    pop();
   }
 
   render(){
 
       for(let i = 0; i < this.particles.length - 1; i++){
-        stroke(255);
+        stroke(colGainsboro);
         strokeWeight(3);
         let p = this.particles[i];
         let p1 = this.particles[i + 1];
         if(!this.exploding){
-        line(p.loc.x, p.loc.y, p1.loc.x, p1.loc.y);
-      } else {
+          line(p.loc.x, p.loc.y, p1.loc.x, p1.loc.y);
+        } else {
         this.particles[i].explode = true;
         this.particles[i].render();
+        }
       }
-      }
-
-
   }
 
   explodePS(){
     this.exploding = true;
-    // this.particles.forEach(function(item){
-    //   item.explode = true;
-    // });
   }
 
   kill(index){
