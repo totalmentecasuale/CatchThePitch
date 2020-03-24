@@ -19,6 +19,8 @@ let colJet;
 
 let cnv;
 
+let chordImg, intervalImg;
+
 //Filters : a single filter must include at least two arguments [text, active (true/false)]
 //A greater number of arguments is useful to secondary information and it will be place in the
 //field "filler" of a clickable text
@@ -125,6 +127,12 @@ let answerButton;
 let voiceFreqGraph;
 let correctnessText;
 
+function preload(){
+  fontFakeHope = loadFont("../assets/FakeHope.ttf");
+  fontGameTime = loadFont("../assets/game_time.ttf");
+  chordImg = createImg("../assets/gif_pacman_chord.gif");
+  intervalImg = createImg("../assets/gif_pacman_int.gif");
+}
 
 
 function centerCanvas() {
@@ -136,8 +144,6 @@ function centerCanvas() {
 function setup(){
   cnv = createCanvas(windowWidth, windowHeight);
   centerCanvas();
-  fontFakeHope = loadFont("../assets/FakeHope.ttf");
-  fontGameTime = loadFont("../assets/game_time.ttf");
   textFont('Noto Sans JP');
   textSize(fontsize1);
   textAlign(CENTER, CENTER);
@@ -153,9 +159,9 @@ function setup(){
   x_chord = 0.9;
   y_chord = 0.25;
   x_chordsTrain = 0.25;
-  y_chordsTrain = 0.5;
+  y_chordsTrain = 0.3;
   x_intTrain = 0.75;
-  y_intTrain = 0.5;
+  y_intTrain = 0.3;
   x_next_mode = 0.9;
   y_next_mode = 0.9;
   x_next_chordType = 0.9;
@@ -165,6 +171,9 @@ function setup(){
   wave = new Tone();
   mic = new Microphone();
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
+  imageMode(CENTER);
+  chordImg.size(windowWidth * 0.12,AUTO);
+  intervalImg.size(windowWidth * 0.12,AUTO);
 }
 
 
@@ -184,6 +193,8 @@ function draw() {
     //shows the two buttons for the type of drill (chord/interval)
     chordTrain.show();
     intTrain.show();
+    chordImg.position(0.18 * windowWidth, 0.4 * windowHeight);
+    intervalImg.position(0.68 * windowWidth, 0.41 * windowHeight);
 
   }else if(phase == 1){ // Interval drill
 
@@ -328,6 +339,9 @@ function mouseClicked(){
     fp = new FilterChordsPage();
     //next phase
     phase = 0;
+
+    chordImg.remove();
+    intervalImg.remove();
   }
 
   if(intTrain != undefined && intTrain.isOver()){ // if the type of drill is showing and the text is clicked
@@ -335,6 +349,8 @@ function mouseClicked(){
     fp = new FilterIntervalPage();
     //next phase
     phase = 0;
+    chordImg.remove();
+    intervalImg.remove();
   }
 
   if(home != undefined && home.isOver()){ // if the homepage button is defined and is pressed, go yo homepage

@@ -49,8 +49,6 @@ function preload() {
   fontFakeHope = loadFont('../assets/game_time.ttf');
 
   fontGameTime = loadFont("../assets/game_time.ttf");
-
-
   // Loading images
   fullHeart = loadImage('../assets/full_heart.png');
   emptyHeart = loadImage('../assets/empty_heart.png');
@@ -135,6 +133,11 @@ function draw(){
   }else{
     backHomeButton.show();
     restartButton.show();
+    let statsVec = stats.retrieve();
+    let dataStat = new ClickableText("Your score is " + statsVec[0] + "\n" + 
+                                     "You answered correctly to " + statsVec[0] + " question\n" + 
+                                     "on a total of " + statsVec[1], 0.5, 0.3, fontsize, undefined, false, fontGameTime);
+    dataStat.show();
   }
 }
 
@@ -150,7 +153,7 @@ function mouseClicked(){
     location.href='../index.html';
   }else if(restartButton != undefined && restartButton.isOver()){
     restart();
-    rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 50);
+    rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
     backHomeButton = undefined;
     restartButton = undefined;
   }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
@@ -173,7 +176,7 @@ function newQuestion(answer, answerNote){
   currentRoot = teoria.note(selectedNote + "3");
   let index = int((random(intervalsVector.length) * 50) % intervalsVector.length);
   is.selectInterval(index);
-  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 50);
+  rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   
   answered = false;
   if(!gameOver){
@@ -204,7 +207,7 @@ function removeLife(){
       livesVector[livesLeft] = false;
       livesLeft--;
       if(livesLeft == -1){
-        death();
+        lives();
         gameOver = true;
         backHomeButton = new ClickableText("Back to home", 0.65, 0.5, fontsize, undefined, false, fontGameTime);
         restartButton = new ClickableText("Restart", 0.35, 0.5, fontsize, undefined, false, fontGameTime);
@@ -215,7 +218,7 @@ function removeLife(){
 
 function flatify(s){ //Changes every b in flat, needs impprovement
    if ((s[1] == 'b' || s[1] == 'B') && s.length > 1) {
-     var newS = s[0] + '♭' + s.substr(2);
+     var newS = s[0] + '♭';
      return newS;
    }
    return s;
@@ -223,13 +226,6 @@ function flatify(s){ //Changes every b in flat, needs impprovement
 
  function startBar(){
    timeBar.start();
- }
-
- function death(){ // Triggers death event
-   lives();
-   alert('You\'re dead bitch');
-   var statsVec = stats.retrieve();
-   alert('Correct: '+statsVec[0]+' Total: '+statsVec[1]);
  }
 
 function generalRender(){ // Non so se è una buona idea
@@ -301,7 +297,7 @@ function restart(){
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
   currentRoot  = teoria.note(selectedNote);
-  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 50);
+  rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
 
   wave.play(currentRoot.toString(true));

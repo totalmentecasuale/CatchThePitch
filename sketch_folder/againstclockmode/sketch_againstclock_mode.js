@@ -60,7 +60,7 @@ function setup(){
   centerCanvas();
   radius = windowHeight * 0.15;
   mic = new Microphone();
-
+  
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
   timeBar = new Bar(120, barPos); // Changed its name to avoid confusion with the ProgressBar class
@@ -118,6 +118,10 @@ function draw(){
       generalRender(); // Renders everything, po esse na cazzata
     }
   }else{
+    let res = stats.retrieve();
+    let dataStats = new ClickableText("You answered " + res[0] + " times correctly\n" + 
+                                      "on a total of " + res[1] + " questions", 0.5, 0.3, fontsize, undefined,false, fontGameTime);
+    dataStats.show();
     backHomeButton.show();
     restartButton.show();
   }
@@ -236,9 +240,6 @@ function generalRender(){ // Non so se è una buona idea
 }
 
 function death(){ // Triggers death event
-  alert('You\'re dead bitch');
-  var statsVec = stats.retrieve();
-  alert('Correct: '+statsVec[0]+' Total: '+statsVec[1]);
   dead = true;
   backHomeButton = new ClickableText("Back to home", 0.65, 0.5, fontsize, undefined, false, fontGameTime);
   restartButton = new ClickableText("Restart", 0.35, 0.5, fontsize, undefined, false, fontGameTime);

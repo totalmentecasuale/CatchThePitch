@@ -19,6 +19,12 @@ let explode;
 var bATC, bArcade, bZen, bAbout;
 //----------------------
 
+
+function preload(){
+  fontFakeHope = loadFont("../assets/FakeHope.ttf");
+  fontGameTime = loadFont("../assets/game_time.ttf");
+  fontLCD = loadFont("../assets/lcd.ttf");
+}
 function centerCanvas() {
   var x = (windowWidth - width) / 2;
   var y = (windowHeight - height) / 2;
@@ -44,9 +50,6 @@ function setup() {
   explode = false;
   //-----------------
   //  Font setup
-  fontLCD = loadFont("../assets/lcd.ttf");
-  fontFakeHope = loadFont("../assets/FakeHope.ttf");
-  fontGameTime = loadFont("../assets/game_time.ttf");
   textFont(fontFakeHope);
   textSize(fontSizeTitle);
   textAlign(CENTER, CENTER);
