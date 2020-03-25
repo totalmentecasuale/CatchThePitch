@@ -128,16 +128,20 @@ function draw(){
 }
 
 function mouseClicked(){
-  if((backHomeButton != undefined && backHomeButton.isOver()) || home.isOver()){
-    location.href='../index.html';
-  }else if(restartButton != undefined && restartButton.isOver()){
-    restart();
-  }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
-    mic.record();
-    voiceFreqGraph = new VoiceGraph();
-  }else if(rootText.isOver()){
-    wave.play(currentRoot.toString(true));
+  if(countdown == undefined){
+
+    if((backHomeButton != undefined && backHomeButton.isOver()) || home.isOver()){
+      location.href='../index.html';
+    }else if(restartButton != undefined && restartButton.isOver()){
+      restart();
+    }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
+      mic.record();
+      voiceFreqGraph = new VoiceGraph();
+    }else if(rootText.isOver()){
+      wave.play(currentRoot.toString(true));
+    }  
   }
+  return false;
 }
 
 function windowResized() {
@@ -263,9 +267,6 @@ function restart(){
 
   steps = 15;
   checkBox = new ProgressBar(steps);
-
-   // Sound
-   wave = new Tone();
 
    // Intervals setup
   is = new IntervalSelector(intervalsVector);

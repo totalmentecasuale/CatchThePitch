@@ -108,29 +108,28 @@ function mouseClicked(){
     console.log('pressed the', bAtc.bText, 'button');
     setTimeout(function(){location.href='../index_againstclock_mode.html';}, 1000);
     ps.explodePS();
-    return false;
   }
 
   if(bArcade.isOver()){
     console.log('pressed the', bArcade.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_arcade_mode.html';}, 1000);
-    return false;
   }
 
   if(bZen.isOver()){
     console.log('pressed the', bZen.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_zen_mode.html';}, 1000);
-    return false;
   }
 
   if(bAbout.isOver()){
     console.log('pressed the', bAbout.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='https://github.com/totalmentecasuale/CatchThePitch/blob/master/README.md';}, 1000);
-    return false;
   }
+
+  return false;
+
 }
 
 function windowResized() {

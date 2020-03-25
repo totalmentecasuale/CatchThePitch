@@ -42,6 +42,7 @@ let mic;
 let answerButton;
 let voiceFreqGraph;
 let correctnessText;
+let countdown;
 
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
@@ -68,7 +69,7 @@ function setup(){
 
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  timeBar = new Bar(2, barPos); // Changed its name to avoid confusion with the ProgressBar class
+  timeBar = new Bar(10, barPos); // Changed its name to avoid confusion with the ProgressBar class
 
   // Color setup
   //Alt color
@@ -95,8 +96,6 @@ function setup(){
   rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 50);
   rootText.show();
 
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
 // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
@@ -118,8 +117,8 @@ function setup(){
   backHomeButton = undefined;
   restartButton = undefined;
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
-
-
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
 }
 
 
@@ -147,25 +146,29 @@ function windowResized() {
 }
 
 function mouseClicked(){
-  if(rootText != undefined && rootText.isOver()){
-    wave.play(currentRoot.toString(true));
-  }else if(backHomeButton != undefined && backHomeButton.isOver()){
-    location.href='../index.html';
-  }else if(restartButton != undefined && restartButton.isOver()){
-    restart();
-    rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
-    backHomeButton = undefined;
-    restartButton = undefined;
-  }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
-    mic.record();
-    voiceFreqGraph = new VoiceGraph();
+  if(countdown == undefined){
+    if(rootText != undefined && rootText.isOver()){
+      wave.play(currentRoot.toString(true));
+    }else if(backHomeButton != undefined && backHomeButton.isOver()){
+      location.href='../index.html';
+    }else if(restartButton != undefined && restartButton.isOver()){
+      restart();
+      rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
+      backHomeButton = undefined;
+      restartButton = undefined;
+    }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
+      mic.record();
+      voiceFreqGraph = new VoiceGraph();
+    }
   }
+
+  return false;
 }
 
 function newQuestion(answer, answerNote){
   stats.update(answer);
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  timeBar = new Bar(1, barPos);
+  timeBar = new Bar(10, barPos);
   answered = true;
   if(answer == 2){
     removeLife();
@@ -279,6 +282,18 @@ function generalRender(){ // Non so se è una buona idea
     mic.resetBuffer();
   }
 
+  if(countdown != undefined && !countdown.isOver()){
+    push();
+    fill(red(colJet), green(colJet), blue(colJet), 220);
+    rect(0,0, windowWidth, windowHeight);
+    pop();
+    countdown.render();
+  }else if(countdown != undefined){
+    countdown = undefined;
+    wave.play(currentRoot.toString(true));
+    setTimeout(function() {startBar();}, wave.t2 * 1000);
+  }
+
 }
 
 function restart(){
@@ -287,7 +302,7 @@ function restart(){
   radius = windowHeight * 0.15;
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  timeBar = new Bar(2, barPos); // Changed its name to avoid confusion with the ProgressBar class
+  timeBar = new Bar(10, barPos); // Changed its name to avoid confusion with the ProgressBar class
   checkBox = new ProgressBar(steps);
 
    // Intervals setup
