@@ -100,9 +100,12 @@ class FilterChordsPage{
       this.allChordButton.show(this.opac);
       //show all for modes
       this.allModesButton.show(this.opac);
-      
-      //show go for next phase
-      this.nextPhaseButton.show(this.opac);
+      if(this.checkMinimumFilterSelected()){
+        //show go for next phase
+        this.nextPhaseButton.show(this.opac);
+      }else{
+        this.nextPhaseButton.show(0);
+      }
     }else{ // page is totally dissolved, next phase
       phase = 2;
     }
@@ -212,6 +215,26 @@ class FilterChordsPage{
 
   invisible(){
     return this.dissolving && this.frameToDisappear <=0;
+  }
+
+  checkMinimumFilterSelected(){
+    let arrOK1 = false, arrOK2 = false;
+
+    for(let i = 0; i < this.modes.length; i++){
+      arrOK1 = arrOK1 || this.modes[i].checked;
+      if(arrOK1){
+        break;
+      }
+    }
+
+    for(let i = 0; i < this.chordsList.length; i++){
+      arrOK2 = arrOK2 || this.chordsList[i].checked;
+      if(arrOK2){
+        break;
+      } 
+    }
+
+    return arrOK1 && arrOK2;
   }
   
 }

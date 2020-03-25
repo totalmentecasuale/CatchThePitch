@@ -92,9 +92,12 @@ class FilterIntervalPage{
       //Show "all" for roots
       this.allRootsButton.show(this.opac);
 
-
-      //Show "Go" to next phase
-      this.nextPhaseButton.show(this.opac)
+      if(this.checkMinimumFilterSelected()){
+        //Show "Go" to next phase
+        this.nextPhaseButton.show(this.opac)
+      }else{
+        this.nextPhaseButton.show(0);
+      }
     }else{//the filters are set and the page dissolved totally, next phase starts
       phase = 1;
     }
@@ -139,11 +142,11 @@ class FilterIntervalPage{
     //show all the roots and circle them
     for(let i = 0; i < this.roots.length; i++){
       this.roots[i].show(this.opac);
-      noFill();
-      strokeWeight(2.5);
-      stroke(120,this.opac);
-      circle(this.roots[i].x, this.roots[i].y, this.radiusCheckRoot * 1.3 );
-      noStroke();
+      // noFill();
+      // strokeWeight(2.5);
+      // stroke(120,this.opac);
+      // circle(this.roots[i].x, this.roots[i].y, this.radiusCheckRoot * 1.3 );
+      // noStroke();
     }
   }
   
@@ -191,7 +194,7 @@ class FilterIntervalPage{
     }  
 
     //go button 
-    if(this.nextPhaseButton.isOver() && !this.dissolving){ 
+    if(this.nextPhaseButton.isOver() && !this.dissolving){
       console.log("dissolve clicked");
       this.dissolve();
     } 
@@ -227,6 +230,26 @@ class FilterIntervalPage{
 
   invisible(){
     return this.dissolving && this.frameToDisappear <=0;
+  }
+
+  checkMinimumFilterSelected(){
+    let arrOK1 = false, arrOK2 = false;
+
+    for(let i = 0; i < this.roots.length; i++){
+      arrOK1 = arrOK1 || this.roots[i].checked;
+      if(arrOK1){
+        break;
+      }
+    }
+
+    for(let i = 0; i < intervalsSet.length; i++){
+      arrOK2 = arrOK2 || intervalsSet[i][1];
+      if(arrOK2){
+        break;
+      } 
+    }
+
+    return arrOK1 && arrOK2;
   }
   
 }
