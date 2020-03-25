@@ -40,6 +40,8 @@ let correctnessText;
 
 let home;
 
+let countdown;
+
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
   // is loaded before setup() and draw() are called
@@ -58,7 +60,7 @@ function setup(){
   centerCanvas();
   radius = windowHeight * 0.15;
   mic = new Microphone();
-
+  
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
   timeBar = new Bar(120, barPos); // Changed its name to avoid confusion with the ProgressBar class
@@ -75,22 +77,20 @@ function setup(){
   steps = 15;
   checkBox = new ProgressBar(steps);
 
-   // Sound
-   wave = new Tone();
+  // Sound
+  wave = new Tone();
 
-   // Intervals setup
+  // Intervals setup
   is = new IntervalSelector(intervalsVector);
   is.newInterval();
 
-// First root setup
+  // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
   currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
 
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
-// Font setup
+  // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
   textAlign(CENTER, CENTER);
@@ -103,12 +103,13 @@ function setup(){
 
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
   home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true);
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
 
 }
 
 
 function draw(){
-
   background(colJet);
   if(!dead){
     if(timeBar.isOver() && timeBar.started){
@@ -117,22 +118,30 @@ function draw(){
       generalRender(); // Renders everything, po esse na cazzata
     }
   }else{
+    let res = stats.retrieve();
+    let dataStats = new ClickableText("You answered " + res[0] + " times correctly\n" + 
+                                      "on a total of " + res[1] + " questions", 0.5, 0.3, fontsize, undefined,false, fontGameTime);
+    dataStats.show();
     backHomeButton.show();
     restartButton.show();
   }
 }
 
 function mouseClicked(){
-  if((backHomeButton != undefined && backHomeButton.isOver()) || home.isOver()){
-    location.href='../index.html';
-  }else if(restartButton != undefined && restartButton.isOver()){
-    restart();
-  }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
-    mic.record();
-    voiceFreqGraph = new VoiceGraph();
-  }else if(rootText.isOver()){
-    wave.play(currentRoot.toString(true));
+  if(countdown == undefined){
+
+    if((backHomeButton != undefined && backHomeButton.isOver()) || home.isOver()){
+      location.href='../index.html';
+    }else if(restartButton != undefined && restartButton.isOver()){
+      restart();
+    }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
+      mic.record();
+      voiceFreqGraph = new VoiceGraph();
+    }else if(rootText.isOver()){
+      wave.play(currentRoot.toString(true));
+    }  
   }
+  return false;
 }
 
 function windowResized() {
@@ -220,12 +229,21 @@ function generalRender(){ // Non so se è una buona idea
     mic.resetBuffer();
   }
 
+  if(countdown != undefined && !countdown.isOver()){
+    push();
+    fill(red(colJet), green(colJet), blue(colJet), 220);
+    rect(0,0, windowWidth, windowHeight);
+    pop();
+    countdown.render();
+  }else if(countdown != undefined){
+    countdown = undefined;
+    wave.play(currentRoot.toString(true));
+    setTimeout(function() {startBar();}, wave.t2 * 1000);
+  }
+
 }
 
 function death(){ // Triggers death event
-  alert('You\'re dead bitch');
-  var statsVec = stats.retrieve();
-  alert('Correct: '+statsVec[0]+' Total: '+statsVec[1]);
   dead = true;
   backHomeButton = new ClickableText("Back to home", 0.65, 0.5, fontsize, undefined, false, fontGameTime);
   restartButton = new ClickableText("Restart", 0.35, 0.5, fontsize, undefined, false, fontGameTime);
@@ -250,9 +268,6 @@ function restart(){
   steps = 15;
   checkBox = new ProgressBar(steps);
 
-   // Sound
-   wave = new Tone();
-
    // Intervals setup
   is = new IntervalSelector(intervalsVector);
   is.newInterval();
@@ -263,8 +278,6 @@ function restart(){
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
 
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
 // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
@@ -276,4 +289,6 @@ function restart(){
   dead = false;
   backHomeButton = undefined;
   restartButton = undefined;
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
 }

@@ -11,3 +11,7 @@ canvas {
   font-family: 'fontFakeHope';
   src: url('assets/FakeHope.ttf');
 }
+
+img{
+	z-index: 1000;
+}

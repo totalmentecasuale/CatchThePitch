@@ -19,6 +19,12 @@ let explode;
 var bATC, bArcade, bZen, bAbout;
 //----------------------
 
+
+function preload(){
+  fontFakeHope = loadFont("../assets/FakeHope.ttf");
+  fontGameTime = loadFont("../assets/game_time.ttf");
+  fontLCD = loadFont("../assets/lcd.ttf");
+}
 function centerCanvas() {
   var x = (windowWidth - width) / 2;
   var y = (windowHeight - height) / 2;
@@ -44,9 +50,6 @@ function setup() {
   explode = false;
   //-----------------
   //  Font setup
-  fontLCD = loadFont("../assets/lcd.ttf");
-  fontFakeHope = loadFont("../assets/FakeHope.ttf");
-  fontGameTime = loadFont("../assets/game_time.ttf");
   textFont(fontFakeHope);
   textSize(fontSizeTitle);
   textAlign(CENTER, CENTER);
@@ -81,11 +84,11 @@ function draw() {
   //-- AM --------------
   ps.runPS();
   //---------------------------
-  //---------------------------
+
   //Title Text-----------------
-  if(t == 255){tGrow = false;}
+  if(t >= 255){tGrow = false;}
   if(t <= 150){tGrow = true;}
-  if(tGrow){t++;}else{t--;}
+  if(tGrow){t+=2;}else{t-=2;}
   var titleCol = color(t, t - 50, t);
   fill(titleCol);
   text('Catch the Pitch', width/2, height * 0.1);
@@ -103,30 +106,30 @@ function draw() {
 function mouseClicked(){
   if(bAtc.isOver()){
     console.log('pressed the', bAtc.bText, 'button');
+    setTimeout(function(){location.href='../index_againstclock_mode.html';}, 1000);
     ps.explodePS();
-    return false;
   }
 
   if(bArcade.isOver()){
     console.log('pressed the', bArcade.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_arcade_mode.html';}, 1000);
-    return false;
   }
 
   if(bZen.isOver()){
     console.log('pressed the', bZen.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_zen_mode.html';}, 1000);
-    return false;
   }
 
   if(bAbout.isOver()){
     console.log('pressed the', bAbout.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='https://github.com/totalmentecasuale/CatchThePitch/blob/master/README.md';}, 1000);
-    return false;
   }
+
+  return false;
+
 }
 
 function windowResized() {
