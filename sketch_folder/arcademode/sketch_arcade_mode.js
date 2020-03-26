@@ -95,7 +95,7 @@ function setup(){
 
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
-  currentRoot  = teoria.note(selectedNote);
+  currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.85, 0.5, 50);
   rootText.show();
 
@@ -303,14 +303,14 @@ function generalRender(){ // Non so se è una buona idea
   }
 
   // Showing Popups
-  if(answerButton != undefined && answerButton.isOver()){
+  if(answerButton != undefined && answerButton.isOver() && countdown == undefined){
     var x = answerButton.a * windowWidth;
     var y = answerButton.b * windowHeight;
     var w = textWidth(answerButton.text);
     answerPopUp.show(x, y, w + 5);
   }
 
-  if(rootText.isOver()){
+  if(rootText.isOver()  && countdown == undefined){
     var x = windowWidth * rootText.a;
     var y = windowHeight * rootText.b;
     var w = windowWidth * 0.1;
@@ -318,7 +318,7 @@ function generalRender(){ // Non so se è una buona idea
     infoPopUp = new PopUp('Current base note, click to play it again');
     infoPopUp.show(x, y, w, 30);
   }
-  for (var i = 0; i < is.intervals.length; i++) {
+  for (var i = 0; i < is.intervals.length  && countdown == undefined; i++) {
     var x = windowWidth * rootText.a;
     var y = windowHeight * rootText.b;
     var w = windowWidth * 0.1;
@@ -345,7 +345,7 @@ function restart(){
 
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
-  currentRoot  = teoria.note(selectedNote);
+  currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
 

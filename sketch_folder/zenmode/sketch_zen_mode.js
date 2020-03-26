@@ -172,8 +172,8 @@ function setup(){
   mic = new Microphone();
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
   imageMode(CENTER);
-  chordImg.size(windowWidth * 0.12,AUTO);
-  intervalImg.size(windowWidth * 0.12,AUTO);
+  chordImg.size(windowWidth * 0.12,windowWidth * 0.12);
+  intervalImg.size(windowWidth * 0.12,windowWidth * 0.12);
 }
 
 
