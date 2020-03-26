@@ -372,6 +372,8 @@ function restart(){
   backHomeButton = undefined;
   restartButton = undefined;
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
 }
 
 function intervalExpander(interval){
@@ -379,7 +381,7 @@ function intervalExpander(interval){
   if(interval.charAt(0) == 'P'){
     expanded += 'Perfect';
   } else if (interval.charAt(0) == 'm') {
-    expanded += 'minor';
+    expanded += 'Minor';
   } else if (interval.charAt(0) == 'M') {
     expanded += 'Major';
   }

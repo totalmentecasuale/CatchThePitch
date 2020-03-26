@@ -105,6 +105,9 @@ function setup(){
   home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true);
   countdown = new Countdown(5, 0.5, 0.5, 80);
   countdown.start();
+  // PopUp setup
+  answerPopUp = new PopUp("Start singing, tap and stop when the answer appears");
+  infoPopUp = new PopUp('info');
 
 }
 
@@ -241,6 +244,32 @@ function generalRender(){ // Non so se è una buona idea
     setTimeout(function() {startBar();}, wave.t2 * 1000);
   }
 
+    // Showing Popups
+  if(answerButton != undefined && answerButton.isOver() && countdown == undefined){
+    var x = answerButton.a * windowWidth;
+    var y = answerButton.b * windowHeight;
+    var w = textWidth(answerButton.text);
+    answerPopUp.show(x, y, w + 5);
+  }
+
+  if(rootText.isOver()  && countdown == undefined){
+    var x = windowWidth * rootText.a;
+    var y = windowHeight * rootText.b;
+    var w = windowWidth * 0.1;
+    // infoPopUp = new PopUp();
+    infoPopUp = new PopUp('Current base note, click to play it again');
+    infoPopUp.show(x, y, w, 30);
+  }
+  for (var i = 0; i < is.intervals.length  && countdown == undefined; i++) {
+    var x = windowWidth * rootText.a;
+    var y = windowHeight * rootText.b;
+    var w = windowWidth * 0.1;
+    if (is.intervals[i].isOver(is.dist)){
+      infoPopUp = new PopUp(intervalExpander(is.intervals[i].text));
+      infoPopUp.show(x, y, w, 50);
+    }
+  }
+
 }
 
 function death(){ // Triggers death event
@@ -291,4 +320,29 @@ function restart(){
   restartButton = undefined;
   countdown = new Countdown(5, 0.5, 0.5, 80);
   countdown.start();
+}
+
+function intervalExpander(interval){
+  var expanded = '';
+  if(interval.charAt(0) == 'P'){
+    expanded += 'Perfect';
+  } else if (interval.charAt(0) == 'm') {
+    expanded += 'Minor';
+  } else if (interval.charAt(0) == 'M') {
+    expanded += 'Major';
+  }
+
+  expanded += ' ';
+
+  if(interval.charAt(1) == '1'){
+    expanded += 'Unison';
+  } else if(interval.charAt(1) == '2'){
+    expanded += '2nd';
+  } else if(interval.charAt(1) == '3'){
+    expanded += '3rd';
+  } else {
+    expanded += interval.charAt(1) + 'th';
+  }
+
+  return expanded;
 }
