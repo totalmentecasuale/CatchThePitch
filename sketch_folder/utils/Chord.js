@@ -61,15 +61,18 @@ class Chord {
   }
 
   render(){
-    noStroke();
+    push();
     fill(this.colText);
     text(this.text,this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5);
+    pop();
+
     if(this.root){
+      push();
       noFill();
       strokeWeight(2.5);
-      stroke(255, 100);
+      stroke(255, 150);
       circle(this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5, windowHeight * 0.05);
-      noStroke();
+      pop();
     }
   }
 

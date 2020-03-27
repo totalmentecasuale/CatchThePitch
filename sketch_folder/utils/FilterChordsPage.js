@@ -58,6 +58,8 @@ class FilterChordsPage{
     this.allChordButton = new ClickableText("All", this.x_all_chords, this.y_all_chords, fontsize1, undefined, false, fontGameTime);
     this.allModesButton = new ClickableText("All", this.x_all_modes, this.y_all_modes, fontsize1, undefined, false, fontGameTime);
     this.nextPhaseButton = new ClickableText("Go", this.x_all_modes, this.y_all_modes * 1.2, fontsize1, undefined, true);
+    this.firstSetFilter = new ClickableText(zenChordTextTypes, 0.5,0.08,fontsize1, undefined, true);
+    this.secondSetFilter = new ClickableText(zenChordTextModes, 0.5,0.45,fontsize1, undefined, true);
   }
   
   render(){
@@ -70,29 +72,13 @@ class FilterChordsPage{
     //if still visible, render it
     if(!this.invisible()){
 
-      if(this.t >= 255){this.tGrow = false;}
-      if(this.t <= 150){this.tGrow = true;}
-      if(this.tGrow){this.t+=2;}else{this.t-=2;}
-      //Show the first title for chord types
-      var titleCol = color(this.t, this.t - 50, this.t, this.opac);
-      push();
-      noStroke();
-      textFont(fontFakeHope);
-      textSize(fontsize1);
-      fill(titleCol);
-      text(zenChordTextTypes, windowWidth * 0.5, windowHeight * 0.05);
-      pop();
+      this.firstSetFilter.show(this.opac);
+      
       //show chord types
       this.showChords();
 
       //Show the first title for modes
-      push();
-      noStroke();
-      textFont(fontFakeHope);
-      textSize(fontsize1);
-      fill(titleCol);
-      text(zenChordTextModes, windowWidth * 0.5, windowHeight * 0.45 );
-      pop();
+      this.secondSetFilter.show(this.opac);
       //show modes
       this.showModes();
       

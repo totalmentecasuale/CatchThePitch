@@ -82,7 +82,6 @@ function setup(){
 
   // Intervals setup
   is = new IntervalSelector(intervalsVector);
-  is.newInterval();
 
   // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
@@ -140,7 +139,7 @@ function mouseClicked(){
     }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
       mic.record();
       voiceFreqGraph = new VoiceGraph();
-    }else if(rootText.isOver()){
+    }else if(rootText != undefined && rootText.isOver()){
       wave.play(currentRoot.toString(true));
     }  
   }
@@ -241,6 +240,7 @@ function generalRender(){ // Non so se è una buona idea
   }else if(countdown != undefined){
     countdown = undefined;
     wave.play(currentRoot.toString(true));
+    is.newInterval()
     setTimeout(function() {startBar();}, wave.t2 * 1000);
   }
 
@@ -276,6 +276,10 @@ function death(){ // Triggers death event
   dead = true;
   backHomeButton = new ClickableText("Back to home", 0.65, 0.5, fontsize, undefined, false, fontGameTime);
   restartButton = new ClickableText("Restart", 0.35, 0.5, fontsize, undefined, false, fontGameTime);
+  rootText = undefined;
+  answerButton = undefined;
+  correctnessText = undefined;
+  voiceFreqGraph = undefined;
 }
 
 function restart(){
@@ -299,13 +303,15 @@ function restart(){
 
    // Intervals setup
   is = new IntervalSelector(intervalsVector);
-  is.newInterval();
 
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
   currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
+  
+  answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
+
 
 // Font setup
   textFont('Noto Sans JP');

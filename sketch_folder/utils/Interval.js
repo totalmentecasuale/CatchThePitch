@@ -50,9 +50,11 @@
   }
   
   render(){
+    push();
     fill(255);
     noStroke();
     text(this.text,this.pos.x,this.pos.y);  
+    pop();
   }
   
   run(center){

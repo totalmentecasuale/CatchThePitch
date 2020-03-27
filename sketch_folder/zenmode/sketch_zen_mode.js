@@ -500,7 +500,7 @@ function checkMicAndManageAnswers(){
   }
 
   if(correctnessText != undefined && correctnessText.opac > 0){
-    correctnessText.opac = constrain(correctnessText.opac - 1.5, 0, 255);
+    correctnessText.opac = constrain(correctnessText.opac - 2, 0, 255);
   }else{
     correctnessText = undefined;
   }

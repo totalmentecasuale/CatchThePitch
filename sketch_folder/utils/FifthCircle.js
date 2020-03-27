@@ -41,14 +41,17 @@ class FifthCircle{
     //show the current mode and current root selected
     text(this.idx_mode.text + " " + rootText.dispText, 0.5 * windowWidth, 0.18 * windowHeight);
     pop();
+    push();
     noFill();
     strokeWeight(2.5);
     stroke(255);
     circle(windowWidth * 0.5, windowHeight * 0.5, this.radius * windowHeight);
-
+    pop();
     this.updateStatus();
-    for(let i = 0; i < this.chordList.length; i++){        
+    for(let i = 0; i < this.chordList.length; i++){   
+      if(this.chordList[i].status !== DIS){     
         this.chordList[i].run();
+      }
     }
   }
 
@@ -58,7 +61,6 @@ class FifthCircle{
       let comp_x = (this.radius * windowHeight * 1.3) * cos(offset * -i);
       let comp_y = (this.radius * windowHeight * 1.3) * sin(offset * -i);
       let state = DIS;
-      this.chordList[i].pos = createVector(comp_x,comp_y);
       this.chordList[i].initPos = createVector(comp_x,comp_y);
     }
   }

@@ -91,7 +91,6 @@ function setup(){
 
    // Intervals setup
   is = new IntervalSelector(intervalsVector);
-  is.newInterval();
 
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
@@ -223,6 +222,8 @@ function removeLife(){
         restartButton = new ClickableText("Restart", 0.35, 0.5, fontsize, undefined, false, fontGameTime);
         rootText = undefined;
         answerButton = undefined;
+        correctnessText = undefined;
+        voiceFreqGraph = undefined;
       }
   }
 
@@ -248,7 +249,7 @@ function generalRender(){ // Non so se è una buona idea
   }
   if(correctnessText != undefined && correctnessText.opac > 0){
     correctnessText.show();
-    correctnessText.opac = constrain(correctnessText.opac - 0.5, 0, 255);
+    correctnessText.opac = constrain(correctnessText.opac - 1.5, 0, 255);
   }else{
     correctnessText = undefined;
   }
@@ -298,6 +299,7 @@ function generalRender(){ // Non so se è una buona idea
     countdown.render();
   }else if(countdown != undefined){
     countdown = undefined;
+    is.newInterval();
     wave.play(currentRoot.toString(true));
     setTimeout(function() {startBar();}, wave.t2 * 1000);
   }
@@ -341,14 +343,13 @@ function restart(){
 
    // Intervals setup
   is = new IntervalSelector(intervalsVector);
-  is.newInterval();
 
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
   currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
-  
+
 // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
