@@ -66,7 +66,7 @@ class ProgressBar{
           answers.push(new ClickableText(flatify(answerFundNote.toString(true).toUpperCase()) + 
                                          " (" + flatify(actualCorrectAnswer.toString(true).toUpperCase()) + 
                                          " [" + chordType[i][offset] + "-" + 
-                                         flatify(currentRoot.toString(true).toUpperCase()) + "])", 
+                                         flatify(currentChord.text.toUpperCase()) + "])", 
                                               0.2, this.cells[i].y / windowHeight, 24));
         }
         found = true;
