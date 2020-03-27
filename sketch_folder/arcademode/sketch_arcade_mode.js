@@ -348,9 +348,7 @@ function restart(){
   currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
-
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
+  
 // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);

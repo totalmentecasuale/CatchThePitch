@@ -31,7 +31,10 @@ class FifthCircle{
 
   }
 
-  render(){  
+  render(){ 
+
+    this.updateDispVariables();
+
     push();
     fill(255);
     textSize(28);
@@ -46,6 +49,17 @@ class FifthCircle{
     this.updateStatus();
     for(let i = 0; i < this.chordList.length; i++){        
         this.chordList[i].run();
+    }
+  }
+
+  updateDispVariables(){
+    let offset = 2 * PI / 12;
+    for(let i = 0; i < this.notes.length; i++){
+      let comp_x = (this.radius * windowHeight * 1.3) * cos(offset * -i);
+      let comp_y = (this.radius * windowHeight * 1.3) * sin(offset * -i);
+      let state = DIS;
+      this.chordList[i].pos = createVector(comp_x,comp_y);
+      this.chordList[i].initPos = createVector(comp_x,comp_y);
     }
   }
 

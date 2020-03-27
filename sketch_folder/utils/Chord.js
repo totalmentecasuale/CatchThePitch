@@ -68,7 +68,7 @@ class Chord {
       noFill();
       strokeWeight(2.5);
       stroke(255, 100);
-      circle(this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5, windowHeight * 0.03);
+      circle(this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5, windowHeight * 0.05);
       noStroke();
     }
   }
