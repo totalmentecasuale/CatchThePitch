@@ -15,7 +15,8 @@ class Stats{
     this.statsText = new ClickableText(this.statsString, 0.85, 0.14, 24);
     // Score
     this.score = 0;
-    this.scoreText = new ClickableText(this.score, 0.85, 0.15, 32);
+    this.scoreString = 'Score: ' + int(this.score);
+    this.scoreText = new ClickableText(this.scoreString, 0.85, 0.15, 45, undefined, false, fontFakeHope);
     this.currStreak = 0;
     this.currFibo = 1;
     this.prevFibo = 1;
@@ -23,11 +24,14 @@ class Stats{
 
   render(){
     this.statsText.show();
-
   }
 
   updateScore(){
-    this.scoreText.update(int(this.score));
+    this.scoreString = 'Score: ' + int(this.score);
+    if(this.prevFibo > 1){
+      this.scoreString += '\n Mult: ' + this.prevFibo + 'x';
+    }
+    this.scoreText.update(this.scoreString);
     this.scoreText.show();
   }
 
