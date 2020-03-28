@@ -16,7 +16,7 @@ class ClickableText{
 	}
 
 	show(opac = undefined){
-		if(opac != undefined){
+		if(opac > -1){
 			this.opac = opac;
 		}
 		if(!this.isHomepage){
@@ -36,8 +36,8 @@ class ClickableText{
 			if(this.t >= 255){this.tGrow = false;}
 			if(this.t <= 150){this.tGrow = true;}
 			if(this.tGrow){this.t+=2;}else{this.t-=2;}
-			var titleCol = color(this.t, this.t - 50, this.t)
-			fill(titleCol, this.opac);
+			var titleCol = color(this.t, this.t - 50, this.t, this.opac)
+			fill(titleCol);
 			textFont(fontFakeHope);
   			textSize(this.sizeFont);;
 			text(this.dispText, this.a * windowWidth, this.b * windowHeight);

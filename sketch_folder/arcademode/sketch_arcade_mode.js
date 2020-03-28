@@ -31,7 +31,6 @@ let fullHeart, emptyHeart;
 
 // Stats
 let stats;
-
 let home;
 let backHomeButton;
 let restartButton;
@@ -42,11 +41,16 @@ let mic;
 let answerButton;
 let voiceFreqGraph;
 let correctnessText;
+let countdown;
+
+// Popups for answer button and intervals
+let answerPopUp;
+let infoPopUp;
 
 function preload() {
   // Ensure the .ttf or .otf font stored in the assets directory
   // is loaded before setup() and draw() are called
-  fontFakeHope = loadFont('../assets/game_time.ttf');
+  fontFakeHope = loadFont('../assets/FakeHope.ttf');
 
   fontGameTime = loadFont("../assets/game_time.ttf");
   // Loading images
@@ -68,7 +72,7 @@ function setup(){
 
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  timeBar = new Bar(2, barPos); // Changed its name to avoid confusion with the ProgressBar class
+  timeBar = new Bar(10, barPos); // Changed its name to avoid confusion with the ProgressBar class
 
   // Color setup
   //Alt color
@@ -87,16 +91,13 @@ function setup(){
 
    // Intervals setup
   is = new IntervalSelector(intervalsVector);
-  is.newInterval();
 
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
-  currentRoot  = teoria.note(selectedNote);
-  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.9, 0.5, 50);
+  currentRoot  = teoria.note(selectedNote + "3");
+  rootText = new ClickableText(flatify(currentRoot.toString(true).toUpperCase()), 0.85, 0.5, 50);
   rootText.show();
 
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
 // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
@@ -113,13 +114,17 @@ function setup(){
 
   // Stats setup
   stats = new Stats();
-  home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true);
+  home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true, fontFakeHope);
   gameOver = false;
   backHomeButton = undefined;
   restartButton = undefined;
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
 
-
+  // PopUp setup
+  answerPopUp = new PopUp("Start singing, tap and stop when the answer appears");
+  infoPopUp = new PopUp('info');
 }
 
 
@@ -134,8 +139,8 @@ function draw(){
     backHomeButton.show();
     restartButton.show();
     let statsVec = stats.retrieve();
-    let dataStat = new ClickableText("Your score is " + statsVec[0] + "\n" + 
-                                     "You answered correctly to " + statsVec[0] + " question\n" + 
+    let dataStat = new ClickableText("Your score is " + statsVec[2] + "\n" +
+                                     "You answered correctly to " + statsVec[0] + " question\n" +
                                      "on a total of " + statsVec[1], 0.5, 0.3, fontsize, undefined, false, fontGameTime);
     dataStat.show();
   }
@@ -147,37 +152,41 @@ function windowResized() {
 }
 
 function mouseClicked(){
-  if(rootText != undefined && rootText.isOver()){
-    wave.play(currentRoot.toString(true));
-  }else if(backHomeButton != undefined && backHomeButton.isOver()){
-    location.href='../index.html';
-  }else if(restartButton != undefined && restartButton.isOver()){
-    restart();
-    rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
-    backHomeButton = undefined;
-    restartButton = undefined;
-  }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
-    mic.record();
-    voiceFreqGraph = new VoiceGraph();
+  if(countdown == undefined){
+    if(rootText != undefined && rootText.isOver()){
+      wave.play(currentRoot.toString(true));
+    }else if(backHomeButton != undefined && backHomeButton.isOver() || home.isOver()){
+      location.href='../index.html';
+    }else if(restartButton != undefined && restartButton.isOver()){
+      restart();
+      rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
+      backHomeButton = undefined;
+      restartButton = undefined;
+    }else if(answerButton != undefined && answerButton.isOver()){ // if the answer button is clicked, start the acquisition of sound
+      mic.record();
+      voiceFreqGraph = new VoiceGraph();
+    }
   }
+
+  return false;
 }
 
-function newQuestion(answer, answerNote){
-  stats.update(answer);
+function newQuestion(answer, answerNote, precision){
+  stats.update(answer, timeBar.timeLeft, precision);
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  timeBar = new Bar(1, barPos);
+  timeBar = new Bar(10, barPos);
   answered = true;
   if(answer == 2){
     removeLife();
   }
-  
+
   checkBox.newAnswer(answer, answerNote.note, is.intervals[is.lastSelected].text);
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))]
   currentRoot = teoria.note(selectedNote + "3");
   let index = int((random(intervalsVector.length) * 50) % intervalsVector.length);
   is.selectInterval(index);
-  rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
-  
+  rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.85, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
+
   answered = false;
   if(!gameOver){
     wave.play(currentRoot.toString(true));
@@ -191,8 +200,8 @@ function createLivesVector(){
   }
 }
 function lives(){
-  var hX = width * 0.75;
-  var hY = height * 0.04;
+  var hX = width * 0.8;
+  var hY = height * 0.875;
   for(var i = 0; i < livesVector.length; i++){
     hX = width * 0.75 + fullHeart.width * (i + 1);
     if(livesVector[i]){
@@ -213,6 +222,8 @@ function removeLife(){
         restartButton = new ClickableText("Restart", 0.35, 0.5, fontsize, undefined, false, fontGameTime);
         rootText = undefined;
         answerButton = undefined;
+        correctnessText = undefined;
+        voiceFreqGraph = undefined;
       }
   }
 
@@ -232,19 +243,19 @@ function generalRender(){ // Non so se è una buona idea
   if(voiceFreqGraph != undefined){
     voiceFreqGraph.setData(mic.corrBuff);
     voiceFreqGraph.show();
-    answerButton.show(map(voiceFreqGraph.opac, 0, 255, 255, 0));  
+    answerButton.show(map(voiceFreqGraph.opac, 0, 255, 255, 0));
   }else{
     answerButton.show(255);
   }
   if(correctnessText != undefined && correctnessText.opac > 0){
     correctnessText.show();
-    correctnessText.opac = constrain(correctnessText.opac - 0.5, 0, 255);
+    correctnessText.opac = constrain(correctnessText.opac - 1.5, 0, 255);
   }else{
     correctnessText = undefined;
   }
 
-
-  stats.render(); // Shows stats text (top right)
+  home.show();
+  stats.updateScore(); // Shows current score
   lives(); // Shows live counter
   timeBar.run(); // Makes time go tik tok
   checkBox.show(); // Shows answers on the left
@@ -264,44 +275,81 @@ function generalRender(){ // Non so se è una buona idea
     console.log(fundNote.cents, fundNote.note.toString(true).toUpperCase());
     //compare the semitones of both intervals to decide the answer
     let answer = correctInterval.semitones() === answeredInterval.semitones() ? 1 : 2;
+    let precision = 0.00;
     if(answer == 1){
-      let precision = map(abs(fundNote.cents), 0, 50, 100, 0);
+      precision = map(abs(fundNote.cents), 0, 50, 100, 0);
       textToShow = "Correct! Precision is " + precision.toFixed(2) + "%";
       if(precision < 85){
-        textToShow = textToShow + "\n(" + fundNote.cents.toFixed(2) + " cents)";      
+        textToShow = textToShow + "\n(" + fundNote.cents.toFixed(2) + " cents)";
       }
     }else if(answer == 2){
-      textToShow = "Wrong! \nYou just sang a " + flatify(fundNote.note.toString(true).toUpperCase()) + "\n(" +fundFreq.toFixed(2) + " Hz)"; 
+      textToShow = "Wrong! \nYou just sang a " + flatify(fundNote.note.toString(true).toUpperCase()) + "\n(" +fundFreq.toFixed(2) + " Hz)";
     }
     correctnessText = new ClickableText(textToShow, 0.1, 0.9, fontsize*0.5);
     //update the current question and create a new one
-    newQuestion(answer, fundNote);
+    newQuestion(answer, fundNote, precision);
     mic.resetBuffer();
+  }
+
+  if(countdown != undefined && !countdown.isOver()){
+    push();
+    fill(red(colJet), green(colJet), blue(colJet), 220);
+    rect(0,0, windowWidth, windowHeight);
+    pop();
+    countdown.render();
+  }else if(countdown != undefined){
+    countdown = undefined;
+    is.newInterval();
+    wave.play(currentRoot.toString(true));
+    setTimeout(function() {startBar();}, wave.t2 * 1000);
+  }
+
+  // Showing Popups
+  if(answerButton != undefined && answerButton.isOver() && countdown == undefined){
+    var x = answerButton.a * windowWidth;
+    var y = answerButton.b * windowHeight;
+    var w = textWidth(answerButton.text);
+    answerPopUp.show(x, y, w + 5);
+  }
+
+  if(rootText.isOver()  && countdown == undefined){
+    var x = windowWidth * rootText.a;
+    var y = windowHeight * rootText.b;
+    var w = windowWidth * 0.1;
+    // infoPopUp = new PopUp();
+    infoPopUp = new PopUp('Current base note, click to play it again');
+    infoPopUp.show(x, y, w, 30);
+  }
+  for (var i = 0; i < is.intervals.length  && countdown == undefined; i++) {
+    var x = windowWidth * rootText.a;
+    var y = windowHeight * rootText.b;
+    var w = windowWidth * 0.1;
+    if (is.intervals[i].isOver(is.dist)){
+      infoPopUp = new PopUp(intervalExpander(is.intervals[i].text));
+      infoPopUp.show(x, y, w, 50);
+    }
   }
 
 }
 
 function restart(){
   mic.resetBuffer();
-  
+
   radius = windowHeight * 0.15;
   //Prog bar
   var barPos = createVector(windowWidth/2, windowHeight * 0.15);
-  timeBar = new Bar(2, barPos); // Changed its name to avoid confusion with the ProgressBar class
+  timeBar = new Bar(10, barPos); // Changed its name to avoid confusion with the ProgressBar class
   checkBox = new ProgressBar(steps);
 
    // Intervals setup
   is = new IntervalSelector(intervalsVector);
-  is.newInterval();
 
 // First root setup
   var selectedNote = rootNotesVector[int(random(rootNotesVector.length))];
-  currentRoot  = teoria.note(selectedNote);
+  currentRoot  = teoria.note(selectedNote + "3");
   rootText = new ClickableText(currentRoot.toString(true).toUpperCase(), 0.9, 0.5, 50, flatify(currentRoot.toString(true).toUpperCase()));
   rootText.show();
 
-  wave.play(currentRoot.toString(true));
-  setTimeout(function() {startBar();}, wave.t2 * 1000);
 // Font setup
   textFont('Noto Sans JP');
   textSize(fontsize);
@@ -318,9 +366,36 @@ function restart(){
 
   // Stats setup
   stats = new Stats();
-  home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true);
+  home = new ClickableText("Catch the pitch", 0.5, 0.1, 55, undefined, true, fontFakeHope);
   gameOver = false;
   backHomeButton = undefined;
   restartButton = undefined;
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize, undefined, false, fontGameTime);
+  countdown = new Countdown(5, 0.5, 0.5, 80);
+  countdown.start();
+}
+
+function intervalExpander(interval){
+  var expanded = '';
+  if(interval.charAt(0) == 'P'){
+    expanded += 'Perfect';
+  } else if (interval.charAt(0) == 'm') {
+    expanded += 'Minor';
+  } else if (interval.charAt(0) == 'M') {
+    expanded += 'Major';
+  }
+
+  expanded += ' ';
+
+  if(interval.charAt(1) == '1'){
+    expanded += 'Unison';
+  } else if(interval.charAt(1) == '2'){
+    expanded += '2nd';
+  } else if(interval.charAt(1) == '3'){
+    expanded += '3rd';
+  } else {
+    expanded += interval.charAt(1) + 'th';
+  }
+
+  return expanded;
 }

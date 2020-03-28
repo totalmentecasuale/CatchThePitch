@@ -4,7 +4,7 @@
 
 let cnv, butt;
 //Font variables -------
-let fontLCD, fontFakeHope;
+let fontLCD, fontFakeHope, fontGameTime;
 let fontsize = 40, fontSizeTitle = 55;
 //----------------------
 //Color variables-------
@@ -34,7 +34,6 @@ function centerCanvas() {
 function setup() {
   cnv = createCanvas(windowWidth, windowHeight);
   centerCanvas();
-  //Color setup------
   colJet = color(50, 41, 47); // Dark Brown
   colCedarChest = color(192, 87, 70); // Dark Red/Orange
   colDarkVanilla = color(220, 204, 163); // Nice Yellow
@@ -108,29 +107,28 @@ function mouseClicked(){
     console.log('pressed the', bAtc.bText, 'button');
     setTimeout(function(){location.href='../index_againstclock_mode.html';}, 1000);
     ps.explodePS();
-    return false;
   }
 
   if(bArcade.isOver()){
     console.log('pressed the', bArcade.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_arcade_mode.html';}, 1000);
-    return false;
   }
 
   if(bZen.isOver()){
     console.log('pressed the', bZen.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='../index_zen_mode.html';}, 1000);
-    return false;
   }
 
   if(bAbout.isOver()){
     console.log('pressed the', bAbout.bText, 'button');
     ps.explodePS();
     setTimeout(function(){location.href='https://github.com/totalmentecasuale/CatchThePitch/blob/master/README.md';}, 1000);
-    return false;
   }
+
+  return false;
+
 }
 
 function windowResized() {
