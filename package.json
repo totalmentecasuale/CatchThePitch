@@ -1,0 +1,35 @@
+{
+  "requires": true,
+  "lockfileVersion": 1,
+  "dependencies": {
+    "clean": "^4.0.2",
+    "connect": "^3.7.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "serve-favicon": "^2.5.0",
+    "serve-static": "^1.14.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "catchthepitch",
+  "description": "With this web app we aim at helping people internalize musical intervals through a didactic game.",
+  "version": "1.0.0",
+  "main": "server.js",
+  "directories": {
+    "example": "examples"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/totalmentecasuale/CatchThePitch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/totalmentecasuale/CatchThePitch/issues"
+  },
+  "homepage": "https://github.com/totalmentecasuale/CatchThePitch#readme"
+}
