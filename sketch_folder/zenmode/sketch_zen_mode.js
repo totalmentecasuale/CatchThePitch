@@ -5,8 +5,11 @@ let zenIntervalTextRoots = "Choose one or more root notes";
 let zenChordTextTypes = "Choose one or more groups of type of chords for this drill";
 let zenChordTextModes = "Choose one or more modes";
 
+
+let colJet, colCedarChest, colDarkVanilla, colGainsboro, colAmazon;
+
 //Font sizes
-let fontsize1 = 40;
+let fontsize1 = 45;
 let fontsize2 = 33;
 let fontFakeHope;
 let fontGameTime;
@@ -14,8 +17,6 @@ let fontGameTime;
 
 //Filter page
 let fp;
-//Background color
-let colJet;
 
 let cnv;
 
@@ -111,7 +112,6 @@ let nextChordText;
 //Coords for next type of chords
 let x_chord;
 let y_chord;
-let chordText;
 
 //Oscillator
 let wave;
@@ -126,6 +126,10 @@ let mic;
 let answerButton;
 let voiceFreqGraph;
 let correctnessText;
+
+// Popups for answer button and intervals
+let answerPopUp;
+let infoPopUp;
 
 function preload(){
   fontFakeHope = loadFont("../assets/FakeHope.ttf");
@@ -144,6 +148,11 @@ function centerCanvas() {
 function setup(){
   cnv = createCanvas(windowWidth, windowHeight);
   centerCanvas();
+  colCedarChest = color(192, 87, 70); // Dark Red/Orange
+  colDarkVanilla = color(220, 204, 163); // Nice Yellow
+  colGainsboro = color(220, 225, 233); // Panna
+  colAmazon = color(65, 123, 90); // Green
+
   textFont('Noto Sans JP');
   textSize(fontsize1);
   textAlign(CENTER, CENTER);
@@ -171,9 +180,12 @@ function setup(){
   wave = new Tone();
   mic = new Microphone();
   answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
+
   imageMode(CENTER);
-  chordImg.size(windowWidth * 0.12,AUTO);
-  intervalImg.size(windowWidth * 0.12,AUTO);
+
+  // PopUp setup
+  answerPopUp = new PopUp("Start singing, tap and stop when the answer appears");
+  infoPopUp = new PopUp('info');
 }
 
 
@@ -193,6 +205,8 @@ function draw() {
     //shows the two buttons for the type of drill (chord/interval)
     chordTrain.show();
     intTrain.show();
+    chordImg.size(windowWidth * 0.12,windowWidth * 0.12);
+    intervalImg.size(windowWidth * 0.12,windowWidth * 0.12);
     chordImg.position(0.18 * windowWidth, 0.4 * windowHeight);
     intervalImg.position(0.68 * windowWidth, 0.41 * windowHeight);
 
@@ -254,6 +268,9 @@ function draw() {
       }
 
       checkMicAndManageAnswers();
+      
+      showPopup(is, undefined);
+
     }
   }else if(phase == 2){ // chords drill
     if(cf == undefined){ //first run of the branch, setup chord drill
@@ -291,7 +308,6 @@ function draw() {
         //create circle of fifth
         cf = new FifthCircle(activeSetGrades, activeModes);
         cf.newChord();
-        chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false, fontGameTime);
         //create the answers bar, passing the active type of chords selected
         steps = cf.type.filler.length;
         checkBox = new ProgressBar(steps, false);
@@ -310,7 +326,6 @@ function draw() {
       nextModeText.show();
       nextChordTypeText.show();
       nextChordText.show();
-      chordText.show();
       if(voiceFreqGraph != undefined){
         answerButton.show(map(voiceFreqGraph.opac, 0, 255, 255, 0));  
       }else if(correctnessText != undefined && correctnessText.opac > 0){
@@ -322,6 +337,8 @@ function draw() {
         answerButton.show(255);
       }
       checkMicAndManageAnswers();
+
+      showPopup(undefined, cf);
 
     }
   }else if(!fp.invisible()){ // if the phase is 0 and fp is not invisible, show the page of filters
@@ -364,14 +381,12 @@ function mouseClicked(){
   }else if(nextModeText != undefined && nextModeText.isOver()){
     cf.newMode();
     cf.newChord();
-    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
     steps = cf.type.filler.length;
     checkBox.reset(steps);
     answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
     console.log("nextModeText clicked");
   }else if(nextChordText != undefined && nextChordText.isOver()){
     cf.newChord();
-    chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
     steps = cf.type.filler.length;
     checkBox.reset(steps);
     answerButton = new ClickableText("Tap to answer", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
@@ -454,7 +469,7 @@ function newRandomRoot(){
 
 function flatify(s){
    if ((s[1] == 'b' || s[1] == 'B') && s.length > 1) {
-     var newS = s[0] + '♭' + s.substr(2);
+     var newS = s[0] + '♭';
      return newS;
    }
    return s;
@@ -472,7 +487,6 @@ function flatify(s){
       newRandomRoot();
       cf.newMode();
       cf.newChord();
-      chordText = new ClickableText("Chord " + cf.chord.text, x_chord, y_chord, fontsize2, "Chord " + flatify(cf.chord.text), false);
       answerButton = new ClickableText("Reset answers bar", 0.5, 0.9, fontsize1, undefined, false, fontGameTime);
     }
   }
@@ -486,7 +500,7 @@ function checkMicAndManageAnswers(){
   }
 
   if(correctnessText != undefined && correctnessText.opac > 0){
-    correctnessText.opac = constrain(correctnessText.opac - 1.5, 0, 255);
+    correctnessText.opac = constrain(correctnessText.opac - 2, 0, 255);
   }else{
     correctnessText = undefined;
   }
@@ -526,4 +540,145 @@ function checkMicAndManageAnswers(){
     newQuestion(answer, fundNote.note);
     mic.resetBuffer();
   }
+}
+
+function intervalExpander(interval){
+  var expanded = '';
+  if(interval.charAt(0) == 'P'){
+    expanded += 'Perfect';
+  } else if (interval.charAt(0) == 'm') {
+    expanded += 'Minor';
+  } else if (interval.charAt(0) == 'M') {
+    expanded += 'Major';
+  }
+
+  expanded += ' ';
+
+  if(interval.charAt(1) == '1'){
+    expanded += 'Unison';
+  } else if(interval.charAt(1) == '2'){
+    expanded += '2nd';
+  } else if(interval.charAt(1) == '3'){
+    expanded += '3rd';
+  } else {
+    expanded += interval.charAt(1) + 'th';
+  }
+
+  return expanded;
+}
+
+function chordExpander(chord){
+  var expanded = chord.text + " ";
+  if(chord.status === MAJOR){
+    expanded += 'Major';
+  } else if (chord.status === MINOR) {
+    expanded += 'Minor';
+  } else if (chord.status === DIM) {
+    expanded += 'Diminished';
+  }
+
+  return expanded;
+}
+
+function showPopup(intSel = undefined, modSel = undefined){
+    // Showing Popups
+  if(answerButton != undefined && answerButton.isOver()){
+    push();
+    textSize(fontsize1);
+    var x = answerButton.a * windowWidth;
+    var y = answerButton.b * windowHeight;
+    var w = textWidth(answerButton.text);
+    pop();
+    answerPopUp.show(x, y, w + 5);
+  }
+
+  if(rootText.isOver()){
+    var x = windowWidth * rootText.a;
+    var y = windowHeight * rootText.b;
+    var w = windowWidth * 0.1;
+    // infoPopUp = new PopUp();
+    infoPopUp = new PopUp('Current base note, click to play it again');
+    infoPopUp.show(x, y, w, 30);
+  }
+  if(intSel != undefined){
+    for (var i = 0; i < intSel.intervals.length; i++) {
+      var x = windowWidth * rootText.a;
+      var y = windowHeight * rootText.b;
+      var w = windowWidth * 0.1;
+      if (intSel.intervals[i].isOver()){
+        infoPopUp = new PopUp(intervalExpander(intSel.intervals[i].text));
+        infoPopUp.show(x, y, w, 50);
+      }
+    }
+
+    if(nextRootText != undefined && nextRootText.isOver()){
+      push();
+      textSize(fontsize2);
+      var x = nextRootText.a * windowWidth;
+      var y = nextRootText.b * windowHeight;
+      infoPopUp = new PopUp('Click to change the root');
+      var w = textWidth(infoPopUp.text);
+      pop();
+      infoPopUp.show(x, y, w, 30);
+
+    }
+
+    if(nextIntervalText != undefined && nextIntervalText.isOver()){
+      push();
+      textSize(fontsize2);
+      var x = nextIntervalText.a * windowWidth;
+      var y = nextIntervalText.b * windowHeight;
+      infoPopUp = new PopUp('Click to change the interval or click on the interval itself');
+      var w = textWidth(infoPopUp.text);
+      pop();
+      infoPopUp.show(x, y, w, 30);
+    }
+
+  }
+
+  if(modSel != undefined){
+    for (var i = 0; i < modSel.chordList.length; i++) {
+      var x = windowWidth * rootText.a;
+      var y = windowHeight * rootText.b;
+      var w = windowWidth * 0.1;
+      if (modSel.chordList[i].isOver()){
+        infoPopUp = new PopUp(chordExpander(modSel.chordList[i]));
+        infoPopUp.show(x, y, w, 50);
+      }
+    }
+
+    if(nextModeText != undefined && nextModeText.isOver()){
+      push();
+      textSize(fontsize2);
+      var x = nextModeText.a * windowWidth;
+      var y = nextModeText.b * windowHeight;
+      infoPopUp = new PopUp('Click to change the mode');
+      var w = textWidth(infoPopUp.text);
+      pop();
+      infoPopUp.show(x, y, w, 30);
+    }
+
+    if(nextChordText != undefined && nextChordText.isOver()){
+      push();
+      textSize(fontsize2);
+      var x = nextChordText.a * windowWidth;
+      var y = nextChordText.b * windowHeight;
+      infoPopUp = new PopUp('Click to change the chord');
+      var w = textWidth(infoPopUp.text);
+      pop();
+      infoPopUp.show(x, y, w, 30);
+    }
+
+    if(nextChordTypeText != undefined && nextChordTypeText.isOver()){
+      push();
+      textSize(fontsize2);
+      var x = nextChordTypeText.a * windowWidth;
+      var y = nextChordTypeText.b * windowHeight;
+      infoPopUp = new PopUp('Click to change the type of chord');
+      var w = textWidth(infoPopUp.text);
+      pop();
+      infoPopUp.show(x, y, w, 30);
+    }
+  }
+
 }

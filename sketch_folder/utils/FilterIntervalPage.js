@@ -47,6 +47,8 @@ class FilterIntervalPage{
     this.allIntervalsButton = new ClickableText("All", this.x_all_intervals, this.y_all_intervals, fontsize1, undefined, false, fontGameTime);
     this.allRootsButton = new ClickableText("All", this.x_all_roots, this.y_all_roots, fontsize1, undefined, false, fontGameTime);
     this.nextPhaseButton = new ClickableText("Go", this.x_all_roots, this.y_all_roots * 1.2, fontsize1, undefined, true);
+    this.firstSetFilter = new ClickableText(zenIntervalTextTypes, 0.5,0.08,fontsize1, undefined, true);
+    this.secondSetFilter = new ClickableText(zenIntervalTextRoots, 0.5,0.45,fontsize1, undefined, true);
   }
   
   render(){
@@ -59,30 +61,13 @@ class FilterIntervalPage{
 
     //if still visible, render it
     if(!this.invisible()){
-      if(this.t >= 255){this.tGrow = false;}
-      if(this.t <= 150){this.tGrow = true;}
-      if(this.tGrow){this.t+=2;}else{this.t-=2;}
-      //Show the first title for intervals
-      var titleCol = color(this.t, this.t - 50, this.t, this.opac);
-      push();
-      noStroke();
-      textFont(fontFakeHope);
-      textSize(fontsize1);
-      fill(titleCol);
-      text(zenIntervalTextTypes, windowWidth * 0.5, windowHeight * 0.05);
-      pop();
+
+      this.firstSetFilter.show(this.opac);
       //show the intervals
       this.showIntervals();
 
       //Show the second title for roots
-      push();
-      noStroke();
-      textFont(fontFakeHope);
-      textSize(fontsize1);
-      fill(titleCol);
-      text(zenIntervalTextRoots, windowWidth * 0.5, windowHeight * 0.45 );
-      pop();
-
+      this.secondSetFilter.show(this.opac);
       //show the roots
       this.showRoots();
       
@@ -92,9 +77,12 @@ class FilterIntervalPage{
       //Show "all" for roots
       this.allRootsButton.show(this.opac);
 
-
-      //Show "Go" to next phase
-      this.nextPhaseButton.show(this.opac)
+      if(this.checkMinimumFilterSelected()){
+        //Show "Go" to next phase
+        this.nextPhaseButton.show(this.opac)
+      }else{
+        this.nextPhaseButton.show(0);
+      }
     }else{//the filters are set and the page dissolved totally, next phase starts
       phase = 1;
     }
@@ -139,11 +127,11 @@ class FilterIntervalPage{
     //show all the roots and circle them
     for(let i = 0; i < this.roots.length; i++){
       this.roots[i].show(this.opac);
-      noFill();
-      strokeWeight(2.5);
-      stroke(120,this.opac);
-      circle(this.roots[i].x, this.roots[i].y, this.radiusCheckRoot * 1.3 );
-      noStroke();
+      // noFill();
+      // strokeWeight(2.5);
+      // stroke(120,this.opac);
+      // circle(this.roots[i].x, this.roots[i].y, this.radiusCheckRoot * 1.3 );
+      // noStroke();
     }
   }
   
@@ -191,7 +179,7 @@ class FilterIntervalPage{
     }  
 
     //go button 
-    if(this.nextPhaseButton.isOver() && !this.dissolving){ 
+    if(this.nextPhaseButton.isOver() && !this.dissolving){
       console.log("dissolve clicked");
       this.dissolve();
     } 
@@ -227,6 +215,26 @@ class FilterIntervalPage{
 
   invisible(){
     return this.dissolving && this.frameToDisappear <=0;
+  }
+
+  checkMinimumFilterSelected(){
+    let arrOK1 = false, arrOK2 = false;
+
+    for(let i = 0; i < this.roots.length; i++){
+      arrOK1 = arrOK1 || this.roots[i].checked;
+      if(arrOK1){
+        break;
+      }
+    }
+
+    for(let i = 0; i < intervalsSet.length; i++){
+      arrOK2 = arrOK2 || intervalsSet[i][1];
+      if(arrOK2){
+        break;
+      } 
+    }
+
+    return arrOK1 && arrOK2;
   }
   
 }
