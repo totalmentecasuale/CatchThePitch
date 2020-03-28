@@ -19,10 +19,11 @@ class FilterCell{
     }else{
       this.col = color(255, opac);
     }
-    
+    push();
     fill(this.col);
     textSize(fontsize2);
     text(this.text, this.x, this.y);
+    pop();
   }
 
 

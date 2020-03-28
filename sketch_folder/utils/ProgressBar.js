@@ -55,18 +55,21 @@ class ProgressBar{
                                          flatify(currentRoot.toString(true).toUpperCase()) + "])", 0.2, this.cells[i].y / windowHeight, 24));
         }else{
           let offset = 0;
-          if(currentChord != undefined){
-            if(currentChord.status == MINOR){
-              offset = 1;
-            }else if(currentChord.status == DIM){
-              offset = 2;
-            }
+          let type = 'Maj';
+          if(currentChord.status == MINOR){
+            offset = 1;
+            type = 'Min';
+          }else if(currentChord.status == DIM){
+            offset = 2;
+            type = 'Dim'
           }
+          let chordGradeAnwer = actualCorrectAnswer; 
           actualCorrectAnswer = actualCorrectAnswer.interval(chordType[i][offset]);
           answers.push(new ClickableText(flatify(answerFundNote.toString(true).toUpperCase()) + 
                                          " (" + flatify(actualCorrectAnswer.toString(true).toUpperCase()) + 
                                          " [" + chordType[i][offset] + "-" + 
-                                         flatify(currentRoot.toString(true).toUpperCase()) + "])", 
+                                         flatify(chordGradeAnwer.toString(true).toUpperCase()) + "-" +
+                                         flatify(currentChord.text.toUpperCase()) + " " + type +"])", 
                                               0.2, this.cells[i].y / windowHeight, 24));
         }
         found = true;

@@ -11,7 +11,7 @@ class IntervalSelector{
     for(let i = 0; i < intervals.length; i++){
       let comp_x = (this.radius + this.dist) * cos(offset * -i);
       let comp_y = (this.radius + this.dist) * sin(offset * -i);
-      this.intervals.push(new Interval(intervals[i], '', '', createVector(comp_x, comp_y)));
+      this.intervals.push(new Interval(intervals[i], createVector(comp_x, comp_y)));
     }
   }
 
@@ -38,8 +38,10 @@ class IntervalSelector{
     //the interval to be selected
     let selInt = this.intervals[index];
     //select the interval
-    selInt.toggleSelect();
-    if(this.lastSelected >= 0){ //if there was already one selected interval, update it
+    if(!selInt.selected){
+     selInt.toggleSelect();
+    }
+    if(this.lastSelected >= 0 && this.lastSelected !== index){ //if there was already one selected interval, update it
       let prevSelInt = this.intervals[this.lastSelected];
       prevSelInt.toggleSelect();
     }

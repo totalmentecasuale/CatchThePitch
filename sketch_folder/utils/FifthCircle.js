@@ -31,21 +31,37 @@ class FifthCircle{
 
   }
 
-  render(){  
+  render(){ 
+
+    this.updateDispVariables();
+
     push();
     fill(255);
     textSize(28);
     //show the current mode and current root selected
     text(this.idx_mode.text + " " + rootText.dispText, 0.5 * windowWidth, 0.18 * windowHeight);
     pop();
+    push();
     noFill();
     strokeWeight(2.5);
     stroke(255);
     circle(windowWidth * 0.5, windowHeight * 0.5, this.radius * windowHeight);
-
+    pop();
     this.updateStatus();
-    for(let i = 0; i < this.chordList.length; i++){        
+    for(let i = 0; i < this.chordList.length; i++){   
+      if(this.chordList[i].status !== DIS){     
         this.chordList[i].run();
+      }
+    }
+  }
+
+  updateDispVariables(){
+    let offset = 2 * PI / 12;
+    for(let i = 0; i < this.notes.length; i++){
+      let comp_x = (this.radius * windowHeight * 1.3) * cos(offset * -i);
+      let comp_y = (this.radius * windowHeight * 1.3) * sin(offset * -i);
+      let state = DIS;
+      this.chordList[i].initPos = createVector(comp_x,comp_y);
     }
   }
 

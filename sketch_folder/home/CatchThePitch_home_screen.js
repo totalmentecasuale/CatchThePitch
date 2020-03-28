@@ -4,7 +4,7 @@
 
 let cnv, butt;
 //Font variables -------
-let fontLCD, fontFakeHope;
+let fontLCD, fontFakeHope, fontGameTime;
 let fontsize = 40, fontSizeTitle = 55;
 //----------------------
 //Color variables-------
@@ -34,7 +34,6 @@ function centerCanvas() {
 function setup() {
   cnv = createCanvas(windowWidth, windowHeight);
   centerCanvas();
-  //Color setup------
   colJet = color(50, 41, 47); // Dark Brown
   colCedarChest = color(192, 87, 70); // Dark Red/Orange
   colDarkVanilla = color(220, 204, 163); // Nice Yellow

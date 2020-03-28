@@ -61,15 +61,18 @@ class Chord {
   }
 
   render(){
-    noStroke();
+    push();
     fill(this.colText);
     text(this.text,this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5);
+    pop();
+
     if(this.root){
+      push();
       noFill();
       strokeWeight(2.5);
-      stroke(255, 100);
-      circle(this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5, windowHeight * 0.03);
-      noStroke();
+      stroke(255, 150);
+      circle(this.pos.x + windowWidth * 0.5, this.pos.y + windowHeight * 0.5, windowHeight * 0.05);
+      pop();
     }
   }
 
@@ -116,5 +119,17 @@ class Chord {
   run(){
     this.move();
     this.render();
+  }
+
+  isOver(radius){
+    let x_m = map(mouseX, 0, windowWidth, -windowWidth*0.5, windowWidth*0.5);
+    let y_m = map(mouseY, 0, windowHeight, -windowHeight*0.5, windowHeight*0.5);
+    var x = this.pos.x;
+    var y = this.pos.y;
+    var w = textWidth(this.text);
+    var h = textAscent();
+    var x1 = x + textWidth(this.text) / 2;
+    var y1 = y + textAscent() / 2;
+    return (x_m > x - w / 2  && x_m < x1 && y_m > y - h/2  && y_m < y1) && this.status !== DIS;
   }
 }
