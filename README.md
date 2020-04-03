@@ -6,7 +6,11 @@ It is structured in a way that is similar to ear training apps, but in this case
 
 [Check it out here!](https://catchthepitch.herokuapp.com/)
 
-[Here's how to use it](https://www.youtube.com/watch?v=0ZppPDpC_Jc&feature=youtu.be)
+
+See how to use it on the video below:
+
+[![YouTube Video](/examples/youtubepreviewctp.png)](https://www.youtube.com/watch?v=0ZppPDpC_Jc&feature=youtu.be)
+
 
 ## The home screen
 ![home screen gif](/examples/testHome.gif)
