@@ -6,7 +6,7 @@ It is structured in a way that is similar to ear training apps, but in this case
 
 [Check it out here!](https://catchthepitch.herokuapp.com/)
 
-[Here's how to use it](https://youtu.be/Jql4Z6ob_tw?t=31) <- TODO: change this when tutorial is done
+[Here's how to use it](https://www.youtube.com/watch?v=0ZppPDpC_Jc&feature=youtu.be)
 
 ## The home screen
 ![home screen gif](/examples/testHome.gif)
